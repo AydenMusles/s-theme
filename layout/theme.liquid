@@ -232,3 +232,4 @@
 {% endcapture %}
 {% assign content = content | replace_first: '<!doctype', '!doctype' | split: ' <' %}
 {%- for html in content -%}{%- assign htmlblock = html | strip | prepend: ' <' -%}{{htmlblock | replace: ' </', '</'}}{%- endfor -%}
+
