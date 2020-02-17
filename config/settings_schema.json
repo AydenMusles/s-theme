@@ -8,6 +8,32 @@
     "theme_support_url": "https:\/\/help.outofthesandbox.com\/hc\/en-us\/requests\/new"
   },
   {
+    "name": "Please Read!",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Thanks for choosing Influify. You are currently customizing our framework. If you have any questions please contact us using the live chat by typing in (shopifyhelp)!"
+      },
+      {
+        "type": "paragraph",
+        "content": "Note: This framework is owned by Influify\/ClickCommerce which means you must not make any unautorized code changes. You also must not hire a 3rd party developer without having written permission from Influify first."
+      },
+      {
+        "type": "paragraph",
+        "content": "It is also against our terms to remove the Powered by Influify and or Powered by ClickCommerce watermark from your store. You also cannot claim your store is powered by ClickCommerce when it is powered by Influify or do the opisite."
+      }
+    ]
+  },
+  {
+    "name": "Term Violations!",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Here we will let you know if you violate any of our terms!"
+      }
+    ]
+  },
+  {
     "name": "Layout",
     "settings": [
       {
@@ -27,56 +53,6 @@
         "id": "show_fixed_message",
         "label": "Show bottom fixed message bar",
         "default": false
-      },
-      {
-        "type": "select",
-        "id": "header_layout",
-        "label": "Header",
-        "info": "[Preview options](https:\/\/help.outofthesandbox.com\/hc\/en-us\/articles\/360022225073#header-settings-and-styles)",
-        "options": [
-          {
-            "value": "centered",
-            "label": "Centered"
-          },
-          {
-            "value": "classic",
-            "label": "Classic"
-          },
-          {
-            "value": "search_focus",
-            "label": "Search focus"
-          },
-          {
-            "value": "vertical",
-            "label": "Vertical"
-          }
-        ],
-        "default": "classic"
-      },
-      {
-        "type": "select",
-        "id": "footer_layout",
-        "label": "Footer",
-        "info": "[Preview options](https:\/\/help.outofthesandbox.com\/hc\/en-us\/articles\/360021506133#footer-styles)",
-        "options": [
-          {
-            "value": "none",
-            "label": "None"
-          },
-          {
-            "value": "centered",
-            "label": "Centered"
-          },
-          {
-            "value": "classic",
-            "label": "Classic"
-          },
-          {
-            "value": "promotional",
-            "label": "Promotional"
-          }
-        ],
-        "default": "classic"
       },
       {
         "type": "header",

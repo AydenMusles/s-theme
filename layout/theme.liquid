@@ -96,9 +96,7 @@
   {% include 'social-meta-info' %}
   {% if collection.previous_product %}<link rel="prev" href="{{ collection.previous_product }}">{% endif %}
   {% if collection.next_product %}<link rel="next" href="{{ collection.next_product }}">{% endif %}
-<!-- Zapiet | Store Pickup + Delivery -->
-{% include 'storepickup' %}
-<!-- Zapiet | Store Pickup + Delivery -->
+
 
 </head>
 
@@ -116,18 +114,10 @@
     {% section 'announcement-bar' %}
   {% endif %}
 
-  {% if settings.header_layout == "classic" %}
-    {% section 'header__top-bar' %}
-    {% section 'header-classic' %}
-  {% elsif settings.header_layout == "centered" %}
+
+  
     {% section 'header-centered__top-bar' %}
     {% section 'header-centered' %}
-  {% elsif settings.header_layout == "vertical" %}
-    {% section 'header-vertical' %}
-  {% elsif settings.header_layout == "search_focus" %}
-    {% section 'header__top-bar' %}
-    {% section 'header-search-focus' %}
-  {% endif %}
 
   {% if settings.cart_action == 'drawer' %}
     {% include 'ajax-cart' %}
@@ -164,26 +154,16 @@
     {% section 'mega-menu-10' %}
   {% endif %}
 
-  {% if settings.header_layout == "vertical" %}
-    <div class="is-beside-vertical-header">
-  {% endif %}
+  
 
   {{ content_for_layout }}
 
-  {% if settings.footer_layout == "centered" %}
-    {% section 'footer__icon-bar' %}
-    {% section 'footer-centered' %}
-  {% elsif settings.footer_layout == "classic" %}
+
     {% section 'footer__icon-bar' %}
     {% section 'footer-classic' %}
-  {% elsif settings.footer_layout == "promotional" %}
-    {% section 'footer__icon-bar' %}
-    {% section 'footer-promotional' %}
-  {% endif %}
 
-  {% if settings.header_layout == "vertical" %}
-    </div>
-  {% endif %}
+
+  
 
   {% if settings.show_fixed_message %}
     {% section 'fixed-message' %}
@@ -227,6 +207,21 @@
   }
   function initialize(i,t){var e;i.getElementById(t)?initFreshChat():((e=i.createElement("script")).id=t,e.async=!0,e.src="https://wchat.freshchat.com/js/widget.js",e.onload=initFreshChat,i.head.appendChild(e))}function initiateCall(){initialize(document,"freshchat-js-sdk")}window.addEventListener?window.addEventListener("load",initiateCall,!1):window.attachEvent("load",initiateCall,!1);
 </script>
+  {{ 'cartfox.js' | asset_url | script_tag }}
+  <script>
+  var cartfox = new Cartfox.Cart({{ cart | json }}, {
+        addItem: '#AddToCart',
+        cartItemCount: "#CartItemCount",
+        cartTotal: "#CartTotal, .cart-total",
+        decreaseQuantity: ".minusOne",
+        increaseQuantity: ".plusOne",
+        itemQuantity: '.item-qty',
+        removeItem: '.removeItem',
+        emptyTemplate: '#CartToggled .items-hidden .item',
+        itemContainer: '#CartToggled .items'
+      });
+</script>
+  <script async type="text/javascript" src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=Mj3CdR"></script>
 </body>
 </html>
 {% endcapture %}

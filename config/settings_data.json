@@ -3,8 +3,6 @@
     "show_announcement_bar": true,
     "show_popup": true,
     "show_fixed_message": true,
-    "header_layout": "centered",
-    "footer_layout": "classic",
     "product_layout": "classic",
     "image_loading_style": "blur-up",
     "logo_mobile": "",
@@ -216,7 +214,7 @@
     "behance_link": "",
     "flickr_link": "",
     "email_link": "",
-    "favicon": "shopify:\/\/shop_images\/plus-logo.png",
+    "favicon": "",
     "checkout_header_image": "",
     "checkout_logo_image": "shopify:\/\/shop_images\/footer-logo-new.png",
     "checkout_logo_position": "center",
@@ -231,6 +229,8 @@
     "checkout_accent_color": "#43b44a",
     "checkout_button_color": "#43b44a",
     "checkout_error_color": "#e32c2b",
+    "header_layout": "centered",
+    "footer_layout": "classic",
     "show_labels": false,
     "quikckshop_show_price_savings": true,
     "logo_width": 200,
@@ -273,7 +273,7 @@
       "1557099047693": {
         "type": "index__image-with-text-overlay",
         "settings": {
-          "image": "",
+          "image": "shopify:\/\/shop_images\/923A4E26-8FE9-40AE-AE5A-F3D37B69D6BD.png",
           "link": "",
           "pretext": "",
           "title": "",
@@ -510,7 +510,7 @@
               "logo": "shopify:\/\/shop_images\/3FA9AC02-B189-4522-B72C-C8BE0A483209.png",
               "size": "small",
               "text": "",
-              "social_icons_footer": false
+              "social_icons_footer": true
             }
           },
           "1564514799950": {
@@ -719,7 +719,7 @@
           "padding_top": 40,
           "padding_bottom": 40,
           "css_class": "border",
-          "custom_css": ".border .product-wrap {border: 1px solid #c6c6c6;\nborder-radius: 5px;\npadding: 1em;\nheight: auto;}"
+          "custom_css": ""
         }
       },
       "product__sidebar": {
@@ -1017,26 +1017,6 @@
       "blog__sidebar": {
         "type": "blog__sidebar",
         "blocks": {
-          "blog__sidebar-0": {
-            "type": "featured_promo",
-            "settings": {
-              "promo_background": "#eeeeee",
-              "promo_text": "#000000",
-              "promo_image": "",
-              "richtext": "<p>New&nbsp;<strong>dried leaf in bulk packs<\/strong>! More text about this can go here...<\/p>",
-              "promo_link": "shopify:\/\/products\/dried-bulk",
-              "button_label": "Try it now",
-              "button_style": "button--1"
-            }
-          },
-          "1559600415340": {
-            "type": "recent_posts",
-            "settings": {
-              "title": "Recent posts",
-              "blog": "",
-              "blog_post_count": 4
-            }
-          },
           "1559600424553": {
             "type": "post_tags",
             "settings": {
@@ -1046,12 +1026,10 @@
           }
         },
         "block_order": [
-          "blog__sidebar-0",
-          "1559600415340",
           "1559600424553"
         ],
         "settings": {
-          "show_sidebar": true,
+          "show_sidebar": false,
           "sidebar_position": "left",
           "css_class": "",
           "custom_css": ""
@@ -1428,9 +1406,9 @@
         "type": "cart__banner",
         "settings": {
           "show_banner": true,
-          "image": "shopify:\/\/shop_images\/IMG_4734.JPG",
-          "image_darken": false,
-          "subtitle": "What's in your bag?",
+          "image": "shopify:\/\/shop_images\/858A64DA-F1EE-4570-A0EC-1204067DFCCA.png",
+          "image_darken": true,
+          "subtitle": "What's in your cart?",
           "width": "wide",
           "banner_height": "small",
           "padding_top": 0,
@@ -1769,7 +1747,7 @@
           "padding_top": 20,
           "padding_bottom": 20,
           "css_class": "border",
-          "custom_css": ".border .product-wrap {border: 1px solid #c6c6c6;\nborder-radius: 5px;\npadding: 1em;\nheight: auto;}"
+          "custom_css": ""
         }
       },
       "1581533307874": {
