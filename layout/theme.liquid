@@ -18,7 +18,23 @@
   <meta name="robots" content="index,follow">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="{{ settings.shop_bg_color }}">
-  <link rel="canonical" href="{{ canonical_url }}" />
+  
+                
+<!--MB_OPC-->
+<script>     
+              if(window.location.pathname=='/securecheckout'){
+              document.title = 'Secure checkout';
+              var css = 'body > :not(#cartLoader) {display:none !important}',head = document.head || document.getElementsByTagName('head')[0],style = document.createElement('style');  
+              head.appendChild(style);style.appendChild(document.createTextNode(css));        
+              var svg = "<svg style='position:fixed;top:100px;left:50%;margin-left:-100px;' width='200px'  height='200px'  xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='xMidYMid' class='lds-rolling' style='background: none;'><circle cx='50' cy='50' fill='none' ng-attr-stroke='{{config.color}}' ng-attr-stroke-width='{{config.width}}' ng-attr-r='{{config.radius}}' ng-attr-stroke-dasharray='{{config.dasharray}}' stroke='#197bbd' stroke-width='2' r='15' stroke-dasharray='70.68583470577033 25.561944901923447' transform='rotate(243.197 50 50)'><animateTransform attributeName='transform' type='rotate' calcMode='linear' values='0 50 50;360 50 50' keyTimes='0;1' dur='1s' begin='0s' repeatCount='indefinite'></animateTransform></circle></svg>";
+              document.open();document.write("<!doctype ht"+"ml><ht"+"ml><bo"+"dy><div id='cartLoader' style='min-height:600px;width:100%;text-align:center;background-color: rgba(255, 255, 255, .5);position:absolute;z-index:9999999999'>"+svg+"</div></b"+"ody></ht"+"ml>");document.close();                
+              }
+              var opcSettings = {enabled : true, design : 1, skipCart : false, oneClickBuy : false, customJsFile : '', customCssFile : '', btnSelector : '', enablePopup: false, popupHtml : "",popupBkg : '#ffffff'};
+              var opcLang = {completeOrder : "Complete order", payment : "Payment", shippingMethod : "Shipping method", secureCheckout : "Secure Checkout", paymentNotice : "Please submit information in previous step to show payment methods",shippingNotice : "Please submit shipping information in previous step to show shipping methods"};
+              </script>
+<!--MB_OPC-->
+
+                <link rel="canonical" href="{{ canonical_url }}" />
 
   {% if current_tags %}{% assign meta_tags = current_tags | join: ', ' %}{% endif %}
   <title>{% if template contains "index" %}{{ page_title }}{% else %}{{ page_title }}{% if current_tags %} {{ 'general.meta.tagged_html' | t: tags: meta_tags }}{% endif %}{% if current_page != 1 %} {{ 'general.meta.page' | t: page_number: current_page }}{% endif %}{% unless page_title contains shop.name %} - {{ shop.name }}{% endunless %}{% endif %}</title>
