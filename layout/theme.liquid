@@ -29,7 +29,7 @@
               var svg = "<svg style='position:fixed;top:100px;left:50%;margin-left:-100px;' width='200px'  height='200px'  xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='xMidYMid' class='lds-rolling' style='background: none;'><circle cx='50' cy='50' fill='none' ng-attr-stroke='{{config.color}}' ng-attr-stroke-width='{{config.width}}' ng-attr-r='{{config.radius}}' ng-attr-stroke-dasharray='{{config.dasharray}}' stroke='#197bbd' stroke-width='2' r='15' stroke-dasharray='70.68583470577033 25.561944901923447' transform='rotate(243.197 50 50)'><animateTransform attributeName='transform' type='rotate' calcMode='linear' values='0 50 50;360 50 50' keyTimes='0;1' dur='1s' begin='0s' repeatCount='indefinite'></animateTransform></circle></svg>";
               document.open();document.write("<!doctype ht"+"ml><ht"+"ml><bo"+"dy><div id='cartLoader' style='min-height:600px;width:100%;text-align:center;background-color: rgba(255, 255, 255, .5);position:absolute;z-index:9999999999'>"+svg+"</div></b"+"ody></ht"+"ml>");document.close();                
               }
-              var opcSettings = {enabled : true, design : 1, skipCart : false, oneClickBuy : false, customJsFile : '', customCssFile : '', btnSelector : '', enablePopup: false, popupHtml : "",popupBkg : '#ffffff'};
+              var opcSettings = {enabled : true, design : 1, skipCart : false, oneClickBuy : false, customJsFile : '', customCssFile : 'https%3A%2F%2Fcdn.shopify.com%2Fs%2Ffiles%2F1%2F0040%2F0962%2F3598%2Ft%2F26%2Fassets%2Finfluify-checkout.css%3F2580', btnSelector : '', enablePopup: false, popupHtml : "",popupBkg : '#ffffff'};
               var opcLang = {completeOrder : "Complete order", payment : "Payment", shippingMethod : "Shipping method", secureCheckout : "Secure Checkout", paymentNotice : "Please submit information in previous step to show payment methods",shippingNotice : "Please submit shipping information in previous step to show shipping methods"};
               </script>
 <!--MB_OPC-->
@@ -50,7 +50,7 @@
 
   {{ 'fancybox.css' | asset_url | stylesheet_tag }}
   {{ 'styles.scss.css' | asset_url | stylesheet_tag }}
-
+  
   {% if settings.show_multiple_currencies or shop.enabled_currencies.size > 1 %}
     <script type="text/javascript" src="/services/javascripts/currencies.js" ></script>
   {% endif %}
@@ -222,20 +222,6 @@
     });
   }
   function initialize(i,t){var e;i.getElementById(t)?initFreshChat():((e=i.createElement("script")).id=t,e.async=!0,e.src="https://wchat.freshchat.com/js/widget.js",e.onload=initFreshChat,i.head.appendChild(e))}function initiateCall(){initialize(document,"freshchat-js-sdk")}window.addEventListener?window.addEventListener("load",initiateCall,!1):window.attachEvent("load",initiateCall,!1);
-</script>
-  {{ 'cartfox.js' | asset_url | script_tag }}
-  <script>
-  var cartfox = new Cartfox.Cart({{ cart | json }}, {
-        addItem: '#AddToCart',
-        cartItemCount: "#CartItemCount",
-        cartTotal: "#CartTotal, .cart-total",
-        decreaseQuantity: ".minusOne",
-        increaseQuantity: ".plusOne",
-        itemQuantity: '.item-qty',
-        removeItem: '.removeItem',
-        emptyTemplate: '#CartToggled .items-hidden .item',
-        itemContainer: '#CartToggled .items'
-      });
 </script>
   <script async type="text/javascript" src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=Mj3CdR"></script>
 </body>

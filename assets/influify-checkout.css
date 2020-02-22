@@ -1,0 +1,5 @@
+/* Field Size Inlarge */
+.floating-labels .field--show-floating-label .field__input {
+    padding-top: 2em;
+    padding-bottom: 0.35714em;
+}
