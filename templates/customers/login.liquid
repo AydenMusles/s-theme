@@ -1,32 +1,102 @@
-{% comment %}
-  Main view that is used by visitors to log in to their customer account page.
-  To edit the contents of this file, look inside the `sections` folder for the file name that comes directly after `section`. Eg. {% section 'product__main' %} or {% section 'page__banner' %}
-
-  - https://help.shopify.com/en/themes/development/templates/customers-login
-{% endcomment %}
-
-{% section 'login-form' %}
-
-<script type="text/javascript">
-  function showRecoverPasswordForm(e) {
-    e.preventDefault();
-    document.getElementById('recover-password').style.display = 'block';
-    document.getElementById('customer_login').style.display='none';
-    return false;
-  }
-
-  function hideRecoverPasswordForm(e) {
-    e.preventDefault();
-    document.getElementById('recover-password').style.display = 'none';
-    document.getElementById('customer_login').style.display = 'block';
-    return false;
-  }
-
-  if (window.location.hash == '#recover') { showRecoverPasswordForm() }
-
-  // reset_success is only true when the reset form is
-  {% if reset_success %}
-    showRecoverPasswordForm();
+<div class="gt_container">
+  {% if form.posted_successfully? %}
+    <span class="reset-password-success">
+      {{ 'customer.recover_password.message_success' | t }}
+    </span>
   {% endif %}
-</script>
-
+  {%- if form.errors -%}
+    <div class="form-message form-message--error">
+        {{ form.errors | default_errors }}
+    </div>
+  {%- endif -%}
+  <div class="account-login">
+      {% if customer %}
+      <div class="user_login">
+          <div>
+              {{ 'customer.login.message_1' | t }} <a href="/account">{{ 'customer.login.message_2' | t }}</a>
+          </div>
+      </div>
+      {% else %}
+        {% form 'customer_login' %}
+          <h1>{{ 'customer.login.title' | t }}</h1> {{ form.errors | default_errors }}
+          <div class="account-login-group">
+              <label for="CustomerEmail" class="label-hidden">
+                  {{ 'customer.login.email' | t }}
+              </label>
+              <input type="email" name="customer[email]" id="CustomerEmail" class="{% if form.errors contains 'email' %}input-error{% endif %}" placeholder="{{ 'customer.login.placeholder_email' | t }}" spellcheck="false" autocomplete="off" autocapitalize="off" autofocus>
+          </div>
+          <div class="account-login-group">
+              <label for="CustomerPassword" class="label-hidden">
+                  {{ 'customer.login.password' | t }}
+              </label>
+              <input type="password" name="customer[password]" id="CustomerPassword" class="{% if form.errors contains 'password' %}input-error{% endif %}" placeholder="{{ 'customer.login.placeholder_password' | t }}">
+          </div>
+          <input type="submit" class="button account-login-submit" value="{{ 'customer.login.sign_in' | t }}">
+          <div class="account-login-link">
+          <a href="#recover" class="forgotPassword">{{ 'customer.login.forgot_password' | t }}</a> |
+          <a href="/account/register">
+              {{ 'customer.login.register' | t }}
+          </a>
+        {% endform %}
+      </div>
+      {% endif %}
+  </div>
+  <div class="account-recover account-hide">
+      {% form 'recover_customer_password' %}
+        <h1>{{ 'customer.recover_password.title' | t }}</h1>
+    	{%- if form.errors -%}
+          <div class="form-message form-message--error">
+              {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+        <div class="account-login-group">
+            <label for="CustomerEmail" class="label-hidden">
+                {{ 'customer.recover_password.email' | t }}
+            </label>
+            <input type="email" value="" name="email" placeholder="{{ 'customer.recover_password.placeholder_email' | t }}" class="input-full{% if form.errors %} input--error{% endif %}" autocorrect="off" autocapitalize="off" {% if form.errors %} aria-invalid="true" aria-describedby="RecoverEmail-email-error" {%- endif -%}>
+        </div>
+        <input type="submit" class="button account-login-submit" value="{{ 'customer.recover_password.submit' | t }}">
+        <div class="account-login-link">
+            <a href="#" class="cancelForgot">{{ 'customer.recover_password.cancel' | t }}</a> |
+            <a href="/account/register">
+                {{ 'customer.recover_password.register' | t }}
+            </a>
+        </div>
+      {% endform %}
+  </div>
+</div>
+<style>
+.account-login,
+.account-recover {
+    max-width: 600px;
+    margin: 100px auto;
+}
+.account-login-group {
+    margin-top: 15px;
+}
+.account-login-group label {
+    margin-bottom: 10px;
+    display: block;
+}
+.account-login-submit {
+    width: 45%;
+    margin: 15px auto 0 auto;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.account-login-link {
+    margin-top: 14px;
+    text-align: center;
+}
+.account-hide {
+    display: none;
+}
+  
+@media (max-width: 1024px) {
+  .account-login-submit {
+    width: 100%;
+  }
+}
+</style>

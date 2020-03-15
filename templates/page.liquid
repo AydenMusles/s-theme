@@ -1,13 +1,18 @@
-{% comment %}
-  To edit the contents of this file, look inside the `sections` folder for the file name that comes directly after `section`. Eg. {% section 'product__main' %} or {% section 'page__banner' %}
-{% endcomment %}
+<div class="gt_container">
+    <div class="gt_page">
+        <h1>{{ page.title }}</h1>
 
-<main id="template-{{ template | replace: '.', '-' | handle }}" class="shopify-section default-page">
-  <section class="section__wrapper
-                  section
-                  ">
-    <div class="container">
-      {% section 'page__main' %}
+        <div class="gt_box-desc rte">
+            {{ page.content }}
+        </div>
     </div>
-  </section>
-</main>
+</div>
+<style>
+    .gt_page {
+        margin: 50px 0;
+    }
+    
+    .gt_page h1 {
+        margin-bottom: 20px
+    }
+</style>

@@ -1,0 +1,724 @@
+
+<section class="gt_section-215681 " data-name="Product Details" keyword="product">
+  
+  {%- assign current_variant = product.selected_or_first_available_variant -%}
+  <script type="application/json" class="ProductJson" data-id="{{product.id}}" data-variant="{{product.selected_or_first_available_variant.id}}">
+      {{ product | json }}
+  </script>
+  {% unless current_variant == empty %}
+  <script type="application/json"> 
+      {{ current_variant | json }}
+  </script>
+  {% endunless %}
+  
+  {% assign currentPrice = current_variant.price | plus: 0 %}
+  {% assign comparePrice = current_variant.compare_at_price | plus: 0 %}
+  {% assign featured_image = current_variant.featured_image | default: product.featured_image %}
+  <div class="gt_product" itemscope itemtype="http://schema.org/Product">
+    <meta itemprop="name" content="{{ product.title }}">
+    <meta itemprop="url" content="{{ shop.url }}{{ product.url }}">
+    <meta itemprop="image" content="{{ product.featured_image.src | img_url: 'grande' }}">
+      <div class="gt_container">
+        <div class="gt_flex gt_flex-sm-column">
+          <div class="gt_product-image">
+            <div class="gt_product-img">
+                <img class="gt_product-image--feature gt_lazyload" src="{{ featured_image.src | img_url: '100x' }}" data-id="{{featured_image.id}}" alt="{{ featured_image.alt | escape }}">
+            </div>
+            {% if product.images.size > 0%}
+            <div class="owl-carousel gt_product-carousel">
+              {%- for image in product.images -%}
+                <div class="item gt_product-carousel--item">
+                    {% assign classThumbnailImage = "" %}
+                    {% if featured_image.id == image.id %}
+                      {% assign classThumbnailImage = "gt_active" %}
+                    {% endif %}
+                    
+                    <img class="{{classThumbnailImage}} gt_lazyload" src="{{ image.src | img_url: '100x' }}" data-id="{{image.id}}" alt="{{ image.alt | escape }}" data-original="{{ image.src | img_url: 'master' }}">            
+                </div>
+              {%- endfor -%}
+            </div>
+            {% endif %}
+          </div>
+          <div class="gt_product-content">
+            <div class="gt_product-title">
+              <a>
+                <h1 class="gt_product-title--h2" itemprop="name">
+                  {{ product.title }}
+                </h1>
+              </a>
+              
+            
+             
+             
+             
+               
+             
+             
+              
+              <div>                
+                
+                  <div product-id="{{ product.id }}" class="alr-display-review-badge"></div>
+                  <div class="loox-rating" data-id="{{ product.id }}" data-rating="{{ product.metafields.loox.avg_rating }}" data-raters="{{ product.metafields.loox.num_reviews }}"></div>
+                  <!-- RYVIU APP :: COLLECTION-WIDGET-TOTAL -->	
+                  <div class="ryviu-collection">
+                  <ryviu-widget-total collection="1" reviews_data="{{product.metafields.ryviu.product_reviews_info  | escape  }}" product_id="{{product.id}}" handle="{{product.handle}}">
+                  </ryviu-widget-total>
+                  </div>  
+                  <!-- RYVIU APP -->
+                
+              </div>
+            </div>
+            <div class="gt_product-body">
+              <div class="gt_flex gt_product-price">
+                <div>
+                    <span class="gt_product-price--number" itemprop="price" data-currentprice="{{ product.selected_or_first_available_variant.price }}">
+                        {{ product.selected_or_first_available_variant.price | money }}
+                    </span>  
+                    
+                    {% if product.selected_or_first_available_variant.compare_at_price > 0 and product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}                   
+                    <span class="gt_product-price--compare" data-currentprice="{{ product.selected_or_first_available_variant.compare_at_price }}">
+                        {{ product.selected_or_first_available_variant.compare_at_price | money }}
+                    </span>
+                    {% endif %}
+                    
+                </div>
+
+                {% if comparePrice > 0 and comparePrice > currentPrice %}
+                {% assign classProductSaved = 'gt_active' %}
+                {% else %}
+                    {% assign classProductSaved = '' %}
+                {% endif %}
+                
+                <div class="gt_product-saved {{classProductSaved}}">
+                  <span>
+                      Saved
+                  </span>
+                  <span class="gt_product-saved--number">
+                      {%- if comparePrice > 0 and comparePrice > currentPrice -%}
+                      {%- assign saved = comparePrice | minus: currentPrice -%}
+                      {%- assign comparePriceFloat = comparePrice | times: 1.0 -%}
+                      {%- assign diff = saved | divided_by: comparePriceFloat -%}
+                      {%- assign diff = diff | times: 100.0 -%}
+                      {%- assign diff = diff | round -%}
+                      {{ diff }}%
+                      {%- endif -%}
+                  </span>
+                  <span class="gt_product-saved--price">
+                      {%- if comparePrice > 0 and comparePrice > currentPrice -%}
+                      {%- if saved > 0 -%}
+                        ({{ saved | money }})
+                      {%- endif -%}
+                      {%- endif -%}
+                  </span>
+                </div>
+                
+              </div>
+
+              {% form 'product', product, class:'product-form' %}
+              <input type="hidden" name="id" class="gt_swatches--input" value="{{current_variant.id}}">
+              <div class="gt_product-swatches">
+                {% for option in product.options_with_values %}
+                  {% if option.name != "Title" %}
+                    <div class="gt_product-swatches--item" data-name="{{option.name}}">
+                      <span class="gt_product-swatches--name">{{option.name}}</span>
+                      <div class="gt_flex gt_flex-wrap gt_product-swatches--options">
+                          {% for value in option.values %}
+                          {% if value == option.selected_value %}
+                              {% assign selectedClass = 'gt_swatches--select gt_active' %}
+                          {% else %}
+                              {% assign selectedClass = 'gt_swatches--select' %}
+                          {% endif %}
+                              <div class="{{selectedClass}}" data-name="{{option.name}}" data-value="{{value}}"><span>{{ value }}</span></div>
+                          {% endfor %}
+                      </div>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              {% if current_variant.available %}
+              {% assign classQuantity = '' %}
+              {% else %}
+                  {% assign classQuantity = 'gt_soldout' %}
+              {% endif %}
+              <div class="gt_product-quantity {{classQuantity}}">
+                <span>Quantity</span>
+                <div class="gt_inline-flex gt_product-quantity--wrapper">
+                    <div class="gt_flex gt_justify-c-center gt_align-i-center gt_product-quantity--minus">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2 8C2 7.44772 2.44772 7 3 7L13 7C13.5523 7 14 7.44772 14 8C14 8.55228 13.5523 9 13 9L3 9C2.44772 9 2 8.55228 2 8Z" fill="#6D6D6D"/>
+                      </svg>                          
+                    </div>
+                    <input type="number" class="input gt_product-quantity--number" value="1" min="1" name="quantity">
+                    <div class="gt_flex gt_justify-c-center gt_align-i-center gt_product-quantity--plus">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 2C8.55228 2 9 2.44772 9 3V13C9 13.5523 8.55228 14 8 14C7.44772 14 7 13.5523 7 13V3C7 2.44772 7.44772 2 8 2Z" fill="#6D6D6D"/>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2 8C2 7.44772 2.44772 7 3 7L13 7C13.5523 7 14 7.44772 14 8C14 8.55228 13.5523 9 13 9L3 9C2.44772 9 2 8.55228 2 8Z" fill="#6D6D6D"/>
+                      </svg>                          
+                    </div>
+                </div>
+              </div>
+              {% if current_variant.available %}
+              {% assign classButton = '' %}
+              {% else %}
+                  {% assign classButton = 'gt_soldout' %}
+              {% endif %}
+              <div class="ro_widget"></div>
+              <div class="gt_product-addtocart {{classButton}}" data-addtocart="BUY IT NOW!" data-soldout="SOLD OUT">
+                <button type="submit" name="add" id="AddToCart" class="btn button gt_flex gt_align-i-center gt_justify-c-center gt_product-addtocart--button">
+                    <span class="gt_product-addtocart--text">
+                      {%- if current_variant.available -%}
+                      BUY IT NOW!
+                      {%- else -%}
+                        SOLD OUT
+                      {%- endif -%}
+                    </span>
+                </button>
+              </div><div class="gt_widget-5525 hide" data-name="Countdown Timer">
+  <div class="gt_countdown">
+    <div class="gt_countdown-head">
+      
+        
+          <span class="gt_countdown-head--icon">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M10.7999 0.222015V0.222016C10.1902 -0.102999 9.43252 0.127776 9.1075 0.737465C8.91413 1.1002 8.9113 1.53479 9.09993 1.90001V1.90001C10.5734 4.7865 10.5875 8.20146 9.13793 11.1C9.07062 11.2199 8.91884 11.2626 8.79892 11.1953C8.75733 11.1719 8.72332 11.1371 8.70093 11.095V11.095C8.43696 10.6033 8.24819 10.0747 8.14093 9.52702C8.08813 9.27101 7.90649 9.06062 7.66093 8.97101C7.41542 8.88106 7.14074 8.92621 6.93693 9.09002C4.06872 11.377 2.95429 15.224 4.15593 18.69H4.15593C5.29284 21.9597 8.44718 24.0903 11.9049 23.924C16.1339 23.924 19.0909 21.779 20.0209 18.042C21.3999 12.525 18.0159 4.04601 10.7999 0.222014L10.7999 0.222015ZM15.5369 18.1C15.2874 19.8153 13.7582 21.0485 12.0289 20.929C10.3769 20.9297 8.96253 19.7447 8.67393 18.118C8.62513 17.8462 8.80589 17.5863 9.07769 17.5375C9.1451 17.5254 9.21428 17.5273 9.28093 17.543C10.2993 17.5269 11.2403 16.9962 11.7809 16.133C12.4036 15.474 12.581 14.5106 12.2339 13.673V13.673C12.0989 13.4322 12.1846 13.1274 12.4254 12.9923C12.5537 12.9204 12.7072 12.9086 12.8449 12.96C14.8127 13.8555 15.9215 15.9725 15.5369 18.1H15.5369Z" fill="url(#countdown-paint0_linear5525)"/>
+              <defs>
+              <linearGradient id="countdown-paint0_linear5525" x1="12.0007" y1="0.074707" x2="12.0007" y2="23.9331" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF4141"/>
+                <stop offset="1" stop-color="#FF964A"/>
+              </linearGradient>
+              </defs>
+            </svg>
+          </span>
+        
+        <p class="gt_countdown-heading">
+          Sale ends once the timer hits zero!
+        </p>
+      
+    </div>
+    <div class="gt_countdown-timer">
+      
+      
+      <div class="gt_countdown-hours gt_active">
+        <div class="gt_countdown-num">
+          <div class="gt_countdown-num1">0</div>
+          <div class="gt_countdown-num2">0</div>
+        </div>
+        
+          <p class="gt_countdown-label">
+            Hours
+          </p>
+        
+      </div>
+      <div class="gt_countdown-separate">
+        <span class="gt_countdown-separate--dot"></span>
+        <span class="gt_countdown-separate--dot"></span>
+      </div>
+      
+      <div class="gt_countdown-minutes gt_active">
+        <div class="gt_countdown-num">
+          <div class="gt_countdown-num1">0</div>
+          <div class="gt_countdown-num2">0</div>
+        </div>
+        
+          <p class="gt_countdown-label">
+            Minutes
+          </p>
+        
+      </div>
+      <div class="gt_countdown-separate">
+        <span class="gt_countdown-separate--dot"></span>
+        <span class="gt_countdown-separate--dot"></span>
+      </div>
+      <div class="gt_countdown-seconds gt_active">
+        <div class="gt_countdown-num">
+          <div class="gt_countdown-num1">0</div>
+          <div class="gt_countdown-num2">0</div>
+        </div>
+        
+          <p class="gt_countdown-label">
+            Seconds
+          </p>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+              {% endform %}
+              <div class="gt_product-trust-badge">
+                  <img class="gt_lazyload" src="https://cdn.gemthemes.net/staging/images/admin/652162e8-7a8a-48ee-b446-e7b35f5377b5.png" alt="Trust Badge">
+              </div>
+              <div class="gt_flex gt_align-i-center gt_flex-wrap gt_icon_social">
+                <span class="gt_text_share">
+                  Share:
+                </span>
+                  
+                    <a class="gt_social__twitter" href="https://twitter.com/share?url=https://{{shop.domain}}{{ product.url }}" target="_blank">
+                      <div class="gt_flex gt_icon_content">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18.6396 5.31457C18.0007 5.59856 17.3132 5.79012 16.5917 5.87584C17.3283 5.43487 17.8931 4.73637 18.1595 3.90311C17.4705 4.31198 16.7078 4.60867 15.8954 4.76883C15.2452 4.07597 14.3184 3.64276 13.2929 3.64276C11.3241 3.64276 9.72775 5.23908 9.72775 7.20828C9.72775 7.48733 9.75915 7.75932 9.82018 8.02073C6.85685 7.87186 4.22936 6.45263 2.47077 4.2954C2.16385 4.82174 1.98817 5.43416 1.98817 6.08821C1.98817 7.32505 2.61752 8.41654 3.57426 9.05578C2.99006 9.03708 2.44008 8.87656 1.95924 8.60951C1.95889 8.62433 1.95889 8.6395 1.95889 8.65467C1.95889 10.3819 3.18796 11.8226 4.81921 12.1507C4.52005 12.2318 4.20502 12.2756 3.87976 12.2756C3.64975 12.2756 3.42644 12.2533 3.20878 12.2114C3.6628 13.6278 4.97937 14.6589 6.53935 14.6875C5.31909 15.6439 3.78204 16.214 2.11129 16.214C1.82377 16.214 1.53979 16.197 1.26074 16.1639C2.83907 17.176 4.71302 17.7658 6.72632 17.7658C13.2848 17.7658 16.8708 12.3331 16.8708 7.62138C16.8708 7.46687 16.8676 7.3127 16.8609 7.1596C17.5573 6.65795 18.1619 6.02965 18.6396 5.31457Z" fill="#6D6D6D"/>
+                          </svg>                                                  
+                      </div>
+                    </a>
+                  
+                  
+                    <a class="gt_social__facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://{{shop.domain}}{{ product.url }}" target="_blank">
+                      <div class="gt_flex gt_icon_content">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8.362 17H10.981V9.93865H12.808L13 7.57518H10.981V6.22878C10.981 5.67343 11.086 5.45387 11.581 5.45387H13V3H11.2C9.241 3 8.362 3.92343 8.362 5.6928V7.57518H7V9.96771H8.362V17Z" fill="#6D6D6D"/>
+                          </svg>                                                   
+                      </div>
+                    </a>
+                  
+                  
+                   <a class="gt_social__pinterest" href="http://pinterest.com/pin/create/link/?url=https://{{shop.domain}}{{ product.url }}" target="_blank">
+                      <div class="gt_flex gt_icon_content">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10.0006 1.81964C5.2032 1.81964 1.31348 5.7083 1.31348 10.5068C1.31348 14.0635 3.45237 17.1192 6.51306 18.463C6.48872 17.8558 6.50883 17.1284 6.6644 16.4684C6.83127 15.7628 7.782 11.7348 7.782 11.7348C7.782 11.7348 7.50436 11.1802 7.50436 10.3604C7.50436 9.07345 8.25049 8.11213 9.1797 8.11213C9.96992 8.11213 10.3516 8.7055 10.3516 9.41564C10.3516 10.2101 9.84469 11.3979 9.58434 12.4982C9.36703 13.42 10.0465 14.1718 10.9556 14.1718C12.6013 14.1718 13.7101 12.0579 13.7101 9.55322C13.7101 7.64928 12.4277 6.22406 10.0955 6.22406C7.46027 6.22406 5.81879 8.18903 5.81879 10.384C5.81879 11.1411 6.0421 11.6745 6.39171 12.0879C6.55222 12.2774 6.5748 12.3539 6.51659 12.5716C6.47496 12.7314 6.37936 13.1166 6.33985 13.269C6.28199 13.4895 6.10384 13.5682 5.90487 13.4867C4.69132 12.9914 4.12582 11.6621 4.12582 10.1678C4.12582 7.70044 6.20685 4.74134 10.3343 4.74134C13.6504 4.74134 15.8334 7.14164 15.8334 9.71797C15.8334 13.1251 13.9394 15.6711 11.1468 15.6711C10.2088 15.6711 9.32646 15.1638 9.02448 14.5888C9.02448 14.5888 8.52001 16.5904 8.41347 16.9764C8.22932 17.6466 7.86843 18.3159 7.53894 18.8373C8.32034 19.068 9.14548 19.1936 10.001 19.1936C14.798 19.1936 18.6874 15.3049 18.6874 10.5071C18.687 5.7083 14.7973 1.81964 10.0006 1.81964Z" fill="#6D6D6D"/>
+                          </svg>                                                   
+                      </div>
+                    </a>
+                  
+                  
+                    <a class="gt_social__mail" href="mailto:?body=Skipper%20Tee - https://{{shop.domain}}{{ product.url }}" target="_blank">
+                       <div class="gt_flex gt_icon_content">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M1.875 4.5C1.59886 4.5 1.375 4.72386 1.375 5V15C1.375 15.2761 1.59886 15.5 1.875 15.5H18.125C18.4011 15.5 18.625 15.2761 18.625 15V5C18.625 4.72386 18.4011 4.5 18.125 4.5H1.875ZM-0.125 5C-0.125 3.89544 0.770436 3 1.875 3H18.125C19.2296 3 20.125 3.89544 20.125 5V15C20.125 16.1046 19.2296 17 18.125 17H1.875C0.770436 17 -0.125 16.1046 -0.125 15V5Z" fill="#6D6D6D"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12.5107 7.82284C12.7835 7.51108 13.2573 7.47945 13.569 7.75218L19.4941 12.9355C19.8058 13.2082 19.8375 13.6821 19.5647 13.9938C19.292 14.3056 18.8182 14.3372 18.5064 14.0645L12.5814 8.88114C12.2696 8.60842 12.238 8.1346 12.5107 7.82284Z" fill="#6D6D6D"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M7.48949 7.82284C7.76222 8.13459 7.73059 8.60841 7.41883 8.88114L1.49383 14.0645C1.18208 14.3372 0.708259 14.3056 0.435529 13.9938C0.162798 13.6821 0.194433 13.2082 0.506188 12.9355L6.43119 7.75218C6.74294 7.47945 7.21676 7.51108 7.48949 7.82284Z" fill="#6D6D6D"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M0.315744 3.75258C0.55089 3.41159 1.01795 3.32578 1.35894 3.56092L9.28644 9.02759C9.71562 9.32391 10.2837 9.32415 10.7129 9.02783L18.6407 3.56092C18.9817 3.32578 19.4488 3.41159 19.6839 3.75258C19.9191 4.09358 19.8333 4.56064 19.4923 4.79578L11.5651 10.2622C11.565 10.2623 11.5652 10.2621 11.5651 10.2622C10.6231 10.9124 9.3769 10.9126 8.43491 10.2625L0.507405 4.79578C0.166408 4.56064 0.0805981 4.09358 0.315744 3.75258Z" fill="#6D6D6D"/>
+                          </svg>                                                                                                                                                              
+                       </div>
+                     </a>
+                   
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</section>
+
+
+<section class="gt_section-215680 " data-name="Tab Product">
+  
+  {%- assign current_variant = product.selected_or_first_available_variant -%}
+  <script type="application/json" class="ProductJson" data-id="{{product.id}}" data-variant="{{product.selected_or_first_available_variant.id}}">
+      {{ product | json }}
+  </script>
+  {% unless current_variant == empty %}
+  <script type="application/json"> 
+      {{ current_variant | json }}
+  </script>
+  {% endunless %}
+  {% assign currentPrice = current_variant.price | plus: 0 %}
+  {% assign comparePrice = current_variant.compare_at_price | plus: 0 %}
+  {% assign featured_image = current_variant.featured_image | default: product.featured_image %}
+<div class="gt_container"> 
+  <div class="gt_tab-detail-product">
+
+    <div class="gt_tab-detail-product--head">
+      <div class="gt_slider"></div>
+      
+        <div class="item">
+            <div class="tab_span active" data-tab="1">
+                <span class="gt_tab-detail--title">Description</span>
+              </div>
+        </div>
+      
+      
+        <div class="item">
+            <div class="tab_span" data-tab="2">
+                <span class="gt_tab-detail--title">Shipping & Return</span>
+              </div>
+        </div>
+      
+      
+        <div class="item">
+            <div class="tab_span" data-tab="3">
+                <span class="gt_tab-detail--title">Our Guarantee</span>
+              </div>
+        </div>
+      
+      
+        <div class="item">
+          <div class="tab_span" data-tab="4">
+              <span class="gt_tab-detail--title">Review</span>
+              <p class="gt_review gt_hidden">0</p>
+            </div>
+        </div>
+      
+    </div>
+
+    <div class="owl-carousel gt_tabproduct-carousel gt_tab-detail-product--head-mobi">
+        
+          <div class="item">
+              <div class="active tab_span" data-tab="1">
+                  <span class="gt_tab-detail--title">Description</span>
+                </div>
+          </div>
+        
+        
+          <div class="item">
+              <div class="tab_span" data-tab="2">
+                  <span class="gt_tab-detail--title">Shipping & Return</span>
+                </div>
+          </div>
+        
+        
+          <div class="item">
+              <div class="tab_span" data-tab="3">
+                  <span class="gt_tab-detail--title">Our Guarantee</span>
+                </div>
+          </div>
+        
+        
+          <div class="item">
+            <div class="tab_span" data-tab="4">
+                <span class="gt_tab-detail--title">Review</span>
+                <p class="gt_review gt_hidden"></p>
+              </div>
+          </div>
+        
+    </div>    
+
+    <div class="gt_tab-detail-product--body">
+      
+        <div class=" gt_tab-detail-product--none active " data-tab="1">
+          <div class="gt_box-desc gt_tab-detail-product--text">
+            {{ product.content }}
+          </div>
+          
+          <div class="gt_flex gt_justify-c-center gt_align-i-center   gt_view-more ">
+            <span class="gt_more">View more</span>
+            <span class="gt_less">View less</span>
+            <div class="gt_flex">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.53033 10.5303C8.23744 10.8232 7.76256 10.8232 7.46967 10.5303L4.46967 7.53033C4.17678 7.23744 4.17678 6.76256 4.46967 6.46967C4.76256 6.17678 5.23744 6.17678 5.53033 6.46967L8 8.93934L10.4697 6.46967C10.7626 6.17678 11.2374 6.17678 11.5303 6.46967C11.8232 6.76256 11.8232 7.23744 11.5303 7.53033L8.53033 10.5303Z" fill="#548CF8"/>
+              </svg>                  
+            </div>
+          </div>
+          
+        </div>
+      
+      
+        <div class="gt_tab-detail-product--none" data-tab="2">
+          
+            <div class="gt_text_size_chart"> 
+              We offer standard shipping for all orders made in Timberland Online Store. Orders are shipped on business days only (Monday-Friday, excluding Malaysia National holidays). For in-stock items, depending on the shipping method you select, your order should be processed and ship within 3 - 7 working days after order verification and credit approval. We use flat-rate shipping of RM 12.00 for orders below RM 300. Despite the number of shipments you receive, you will never be charged more than the amount stated on your order confirmation.
+            </div>
+          
+        </div>
+      
+      
+        <div class="gt_tab-detail-product--none" data-tab="3">
+          
+            <div class="gt_text_size_chart"> 
+              Our policy lasts 30 days. If 30 days have gone by since your purchase, unfortunately we can’t offer you a refund or exchange. To be eligible for a return, your item must be unused and in the same condition that you received it. It must also be in the original packaging. Several types of goods are exempt from being returned. Perishable goods such as food, flowers, newspapers or magazines cannot be returned. We also do not accept products that are intimate or sanitary goods, hazardous materials, or flammable liquids or gases. To complete your return, we require a receipt or proof of purchase.
+            </div>
+          
+        </div>
+      
+      
+        <div class="gt_tab-detail-product--none" data-tab="4">
+          
+            <div class="lt-block-reviews"> 
+              <ryviu-widget handle="{{product.handle}}" title_product="{{product.title}}" total_meta="{{ product.metafields.ryviu.r_count }}" image_product="{{ product.featured_image.src | img_url: '800x' }}">
+              </ryviu-widget>
+            </div>
+            <div id="shopify-ali-review" product-id="{{ product.id }}"> {{ shop.metafields.review_collector.review_code }}</div>
+            <div id="looxReviews" data-product-id="{{product.id}}">{{ product.metafields.loox.reviews }}
+            <div id="shopify-product-reviews" data-id="{{product.id}}">{{ product.metafields.spr.reviews }}</div>
+          
+          
+        </div>
+      
+    </div>
+  </div>
+  </div>
+</div>
+
+</section>
+
+
+<section class="gt_section-215660 " data-name="Newsletter">
+  <div class="gt_newletter">
+    <div class="gt_container">
+      <div class="gt_flex gt_align-i-center gt_justify-c-center gt_flex-wrap gt_newletter-body">
+        <div class="gt_newletter_content">
+          <h5 class="gt_newletter_headding">
+              Exclusive 10% Discount
+          </h5>
+          <p class="gt_newletter_message">
+            Join our Email List and get 10% OFF on your first order.
+          </p>
+        </div>
+        <div class="gt_newletter-form">
+          
+            {% form 'customer' %} 
+          
+         
+          {% if form.errors %}
+              {% for field in form.errors %}
+                  <div class="gt_newletter_input">
+                    <p class="result-error">{{ field }} {{ form.errors.messages[field] }}</p>
+                  </div>
+              {% endfor %}
+          {% endif %}
+            
+          {% if form.posted_successfully? %}
+              <div class="gt_newletter_input">
+                <p class="result">Thanks for subscribing</p>
+              </div>
+          {% else %}
+          <div class="gt_newletter_input">
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <input class="gt_input" type="email" value="{% if customer %}{{ customer.email }}{% endif %}" name="contact[email]" autocorrect="off" autocapitalize="off" placeholder="Your email here...">
+            <button class="gt_newletter_btn" id="Subscribe" type="submit" aria-label="Subscribe">
+            Submit!
+          </button>
+          </div>
+          <p class="result"></p>
+          <p class="result-error"></p>
+          {% endif %}
+          
+            {% endform %}
+          
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<section class="gt_section-215659 " data-name="Related Products">
+    
+    
+    
+    
+      {% assign number_of_products = 4 %}
+      {% assign number_of_products_to_fetch = number_of_products | plus: 1 %}
+      {% assign found_a_collection = false %}
+      {% if collection == null or collection.handle == 'all' %}
+        {% for c in product.collections %}
+          {% if found_a_collection == false and c.handle != 'all' and c.all_products_count > 1 %}
+            {% assign found_a_collection = true %}
+            {% assign collection = c %}
+          {% endif %}
+        {% endfor %} 
+      {% endif %}
+    
+    
+    {% if collection and collection.products.size > 0 %}
+      {% assign current_product = product %}
+      {% assign found_a_product = false %}
+      {% for product in collection.products %}
+        {% if product.handle == current_product.handle %}
+          {% assign found_a_product = true %}
+        {% endif %}
+      {% endfor %}
+      {% if found_a_product %}
+    
+        <div class="gt_productlist">
+            <div class="gt_container">
+              <div class="gt_productlist-content">
+                  <div class="gt_flex gt_flex-column gt_align-i-center gt_productlist-head">
+                  <h3>
+                   You may also like
+                  </h3>
+                  </div>
+                  <div class="gt_flex gt_flex-wrap gt_productlist-items">
+                    {% assign current_product_found = false %}
+                    
+                    {% for product in collection.products limit: number_of_products_to_fetch %}
+                    
+                      
+                      {% if product.handle == current_product.handle %}
+                        {% assign current_product_found = true %}
+                      {% else %}
+                        {% unless current_product_found == false and forloop.last %}
+                          <div class="gt_productlist-item">
+                              <div class="gt_element-1873" data-name="Product List" keyword="product">
+  <script type="application/json" class="ProductJson" data-id="{{product.id}}" data-variant="{{product.selected_or_first_available_variant.id}}">
+     {{ product | json }}
+  </script> 
+  <a class="link_gt_product" href="{{product.url}}">
+    <div class="gt_product_content">
+      <div class="gt_image_product">
+        <div class="image_content">
+          <img class="gt_lazyload" src="{{ product.featured_image.src | img_url: '300x' }}" data-id="{{ product.featured_image.id }}" alt="{{ product.featured_image.alt }}">
+        </div>
+        <div class="overlay_img"></div>
+        
+        <div class="tag_sale_content">
+            {%- if product.compare_at_price > 0 and product.compare_at_price > product.selected_or_first_available_variant.price -%}
+            {%- assign saved = product.compare_at_price | minus: product.selected_or_first_available_variant.price -%}
+            {%- assign comparePriceFloat = product.compare_at_price | times: 1.0 -%}
+            {%- assign diff = saved | divided_by: comparePriceFloat -%}
+            {%- assign diff = diff | times: 100.0 -%}
+            {%- assign diff = diff | round -%}
+
+            {% if diff > 9 %}
+            <span class="tag_sale_product">-{{ diff }}%</span>
+            {% else %}
+            <span class="tag_sale_product sale_one_number">-{{ diff }}%</span>
+            {%- endif -%}
+
+            {%- endif -%}
+         
+        </div>
+
+        {% assign endDate = "" %}
+        
+        
+        
+        {% if product.id == auto %}
+          {% assign endDate = "" %}
+        {% endif %}
+        
+
+        {% if endDate != "" %}
+        <div class="gt_countdown" end-date="{{endDate}}" product-id="{{product.id}}">
+          <div class="count_down_content">
+            <span class="time_count_down">
+              <span class="time_count_down-hours">00</span>:<span class="time_count_down-minutes">00</span>:<span class="time_count_down-seconds">00</span>
+            </span>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+      <div class="gt_flex gt_product_price">
+        {%- if product.compare_at_price > 0 and product.compare_at_price > product.selected_or_first_available_variant.price -%}
+          <span class="gt_product-price--compare gt_compare_price" data-currentprice="{{ product.compare_at_price }}">{{product.compare_at_price | money }}</span>
+        {%- endif -%}
+          <span class="gt_curent_price gt_product-price--number" data-currentprice="{{ product.selected_or_first_available_variant.price }}">{{product.selected_or_first_available_variant.price | money }}</span>
+      </div>
+      <div class="gt_product_name">
+          {{product.title}}
+      </div>
+    </div>
+  </a>
+</div>
+
+                          </div>
+                        {% endunless %}
+                      {% endif %}
+                      
+                    {% endfor %}
+                  </div>
+              </div>
+            </div>
+        </div>
+    
+      {% endif %}
+    {% endif %}
+    
+</section>
+
+<section class="gt_section-215678 " data-name="Trust Badge">
+  <div class="gt_trustbagde">
+    <div class="gt_container">
+      <div class="gt_flex gt_align-i-center gt_justify-c-center gt_flex-wrap gt_trustbagde-body">
+        
+        <div class="gt_flex gt_align-i-center gt_trustbagde-items gt_item1">
+          <div class="gt_trustbagde-icon">
+            <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M56.0862 38.7265C54.9947 43.7478 52.1566 48.5506 48.0086 51.8253C43.8607 55.1 38.6212 57.0649 33.3817 56.8465C28.1421 56.8465 22.9026 54.8817 18.7547 51.607C14.825 48.3323 11.987 43.5294 10.8954 38.5082C8.93057 28.2475 14.6067 17.3318 23.9942 13.1839C28.5788 11.0008 34.0366 10.5641 38.8395 11.874C43.8607 13.1839 48.0086 16.022 51.5017 19.7333C51.5017 19.9516 51.5017 19.9516 51.5017 20.1699C51.2833 20.1699 51.2833 20.1699 51.065 20.1699C47.572 16.4586 43.2057 13.8388 38.6212 12.7473C34.0366 11.874 29.0154 12.0923 24.6491 14.2755C15.9166 18.2051 10.6771 28.6841 13.2968 37.8533C15.48 47.0225 24.4308 53.7902 33.6 53.5719C38.1845 53.5719 42.7691 52.0437 46.2621 49.2056C49.9735 46.3675 52.5932 42.4379 53.6848 37.8533C53.9031 37.1984 54.558 36.7617 55.213 36.98C55.8679 37.4167 56.3045 38.0716 56.0862 38.7265Z" fill="#333333"/>
+              <path d="M32.3315 29.1059L26.2662 31.7818C25.9094 31.9602 25.731 31.9602 25.3742 31.7818L17.8817 29.1059C17.3465 28.9275 17.3465 28.3923 17.8817 28.2139L20.5576 27.5003C21.4496 27.3219 22.5199 27.1435 23.4119 27.3219L32.3315 28.5707C32.5099 28.5707 32.5099 28.9275 32.3315 29.1059Z" fill="#F85457"/>
+              <path d="M58.7339 30.533L41.4298 35.528C42.8569 34.1009 42.1433 33.0305 41.073 33.0305C40.7162 33.0305 31.9749 35.528 31.7965 35.7064C29.6558 36.42 28.2287 39.4527 26.9799 39.8095L12.3517 44.0909C11.4597 44.4477 10.3894 44.0909 9.85418 43.3773C6.46471 39.2743 6.46471 39.8095 7.17828 37.1336C7.35667 36.5984 7.89185 36.2416 8.42703 36.5984L12.8869 38.5607C13.2436 38.7391 13.7788 38.7391 14.314 38.5607C43.3921 25.538 52.6685 18.4023 59.4475 28.7491C59.8043 29.4626 59.4475 30.3546 58.7339 30.533Z" fill="#F85457"/>
+              <path d="M31.7965 36.5985L40.8945 33.9226C41.2513 33.7442 41.4297 34.2794 41.2513 34.4578L28.7638 45.1614C28.0502 45.6966 27.1582 46.2318 26.2663 46.4101L23.5904 47.1237C23.2336 47.3021 22.8768 46.7669 23.0552 46.4101L30.0125 37.4905C30.3693 37.3121 31.0829 36.7769 31.7965 36.5985Z" fill="#F85457"/>
+            </svg>
+          </div>
+          <div class="gt_trustbagde-text">
+            
+            <p class="gt_trustbagde-text--title">
+              Free Delivery
+            </p>
+            
+            
+            <p class="gt_trustbagde-text--message">
+              On all order over $75
+            </p>
+            
+          </div>
+        </div>
+        
+        
+        <div class="gt_flex gt_align-i-center gt_trustbagde-items gt_item2">
+          <div class="gt_trustbagde-icon">
+            <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M46.5519 44.9342L35.9057 50.9879C35.697 51.1966 35.2795 50.9879 35.2795 50.5704V37.8368C35.2795 37.628 35.2795 37.628 35.4882 37.4193L46.7606 30.9481C46.9693 30.7394 47.3868 30.9481 47.3868 31.3656V43.473C47.3868 44.0992 46.9694 44.7254 46.5519 44.9342Z" fill="#F85457"/>
+              <path d="M33.401 50.9878L22.7548 44.9341C22.3374 44.7253 21.9199 44.0991 21.9199 43.6816V31.5742C21.9199 31.3655 22.3374 31.1567 22.5461 31.1567L33.8185 37.6279C34.0272 37.6279 34.0272 37.8367 34.0272 38.0454V50.779C34.0272 50.9878 33.8185 51.1965 33.401 50.9878Z" fill="#F85457"/>
+              <path d="M28.1824 25.938L40.0811 32.8267L34.8624 35.7491C34.6536 35.9579 34.2361 35.9579 34.0274 35.7491L22.9638 29.4867C22.755 29.2779 22.755 29.0692 22.9638 28.8605L28.1824 25.938Z" fill="#F85457"/>
+              <path d="M35.2795 22.1805L46.5519 28.6517C46.7606 28.8604 46.7606 29.0692 46.5519 29.2779L41.5419 32.2004L29.6433 25.3117L35.0708 22.1805C34.862 21.9717 35.0708 21.9717 35.2795 22.1805Z" fill="#F85457"/>
+              <path d="M12.735 37.6087C17.85 59.9286 47.8046 61.1972 52.8145 39.2787C54.067 32.1813 51.1445 24.6663 45.5084 20.0739C41.7509 17.1514 37.1584 15.6902 32.566 16.1077L32.9835 18.4039C33.1922 19.2389 32.3573 19.8651 31.5223 19.6564L22.9636 16.3164C22.1286 15.8989 21.9199 14.8552 22.7549 14.4377L29.6435 8.80152C30.2698 8.17528 31.3135 8.59278 31.5223 9.42777L31.9398 12.3502C37.5759 11.9327 43.0034 13.6027 47.3871 17.1514C55.5282 23.6226 58.7837 35.4437 54.4 44.6286C44.5889 65.5034 15.0312 59.1097 11.9 37.8174C12.1087 37.3999 12.5262 37.1912 12.735 37.6087Z" fill="#333333"/>
+            </svg>
+          </div>
+          <div class="gt_trustbagde-text">
+            
+            <p class="gt_trustbagde-text--title">
+              Free Returns
+            </p>
+            
+            
+            <p class="gt_trustbagde-text--message">
+              No more extra fees
+            </p>
+            
+          </div>
+        </div>
+        
+        
+        <div class="gt_flex gt_align-i-center gt_trustbagde-items gt_item3">
+          <div class="gt_trustbagde-icon">
+            <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M48.9864 33.9004C48.9864 37.9866 47.3589 41.8686 44.5107 44.5247C41.866 47.1807 38.0007 49.0195 33.9319 49.0195C25.5909 49.0195 18.8774 42.2772 18.8774 33.9004C18.8774 29.8141 20.5049 25.9322 23.3531 23.2761C25.9978 20.6201 29.8631 18.7812 33.9319 18.7812C38.0007 18.7812 41.866 20.4158 44.5107 23.2761C47.3589 25.9322 48.9864 29.8141 48.9864 33.9004Z" fill="#F85457"/>
+              <path d="M45.3244 33.9004C45.3244 35.3306 44.7141 36.5565 43.6969 37.5781C41.6625 39.6212 38.4075 39.6212 36.1697 37.5781C35.9662 37.3738 35.9662 37.1694 35.9662 36.7608C35.9662 36.5565 35.9662 36.1479 36.1697 35.9436C36.5765 35.5349 37.1869 35.5349 37.5937 35.9436C38.8144 37.1694 40.8488 37.1694 42.0694 35.9436C42.6797 35.3306 43.0866 34.5134 43.0866 33.6961C43.0866 32.8789 42.6797 32.0616 42.0694 31.4487C40.8488 30.2228 38.8144 30.2228 37.5937 31.4487L31.694 37.3738C30.6768 38.3953 29.4562 39.0083 28.0321 39.0083C26.608 39.0083 25.3874 38.3953 24.3702 37.3738C22.3358 35.3306 22.3358 32.0616 24.3702 29.8142C25.3874 28.7926 26.608 28.1797 28.0321 28.1797C29.4562 28.1797 30.6768 28.7926 31.694 29.8142C32.1009 30.2228 32.1009 30.8358 31.694 31.2444C31.2871 31.653 30.6768 31.653 30.2699 31.2444C29.0493 30.0185 27.0149 30.0185 25.7943 31.2444C24.5737 32.4703 24.5737 34.5134 25.7943 35.7393C27.0149 36.9651 29.0493 36.9651 30.2699 35.7393L36.1697 29.8142C38.2041 27.7711 41.4591 27.7711 43.6969 29.8142C44.7141 31.2444 45.3244 32.4703 45.3244 33.9004Z" fill="white"/>
+              <path d="M55.4964 28.997C52.6482 25.728 52.6482 26.1366 52.2414 21.6417C51.4276 13.2649 45.3244 16.1253 41.6625 14.6951C39.2213 13.6735 37.1869 10.2002 33.9319 10.2002C30.6768 10.2002 28.6425 13.6735 25.9978 14.6951C22.1324 16.1253 16.2327 13.0606 15.4189 21.6417C15.0121 26.1366 15.2155 25.728 12.3673 28.997C6.8745 35.535 13.3845 38.191 14.8086 41.6644C16.2327 45.342 13.3845 51.4714 22.1324 52.4929C28.8459 53.1059 27.0149 54.7404 31.2872 56.9878C36.3731 59.8482 39.4247 54.3317 42.0694 53.1059C45.7313 51.6757 52.0379 54.5361 52.8517 45.7506C53.0551 44.1161 53.0551 42.6859 53.462 41.6644C54.6826 38.3954 61.1927 35.535 55.4964 28.997ZM45.7313 50.2455C40.6453 50.6541 40.6453 51.0627 37.1869 53.7188C32.1009 58.0094 31.4906 53.1059 26.8115 51.0627C22.3359 49.2239 17.8602 52.2886 17.4533 45.5463C17.2499 43.7075 17.4533 42.8902 16.6396 40.8471C14.8086 36.5565 9.51921 35.3307 13.7914 30.2228C16.6396 26.7495 16.843 26.5452 17.2499 21.846C17.6568 14.8994 21.929 17.7598 26.6081 15.921C31.4906 13.6735 31.694 8.15707 38.4075 13.8778C41.6625 16.7382 42.4763 16.3296 45.7313 16.7382C52.6482 17.3511 49.3932 21.6417 51.4276 26.3409C53.2586 30.6315 58.548 31.8573 54.0723 36.9652C47.3588 44.9334 53.462 49.6326 45.7313 50.2455Z" fill="#333333"/>
+            </svg>
+          </div>
+          <div class="gt_trustbagde-text">
+            
+            <p class="gt_trustbagde-text--title">
+              Unbeatable Warranty
+            </p>
+            
+            
+            <p class="gt_trustbagde-text--message">
+              1-year ++ warranty
+            </p>
+            
+          </div>
+        </div>
+        
+        
+        <div class="gt_flex gt_align-i-center gt_trustbagde-items gt_item4">
+          <div class="gt_trustbagde-icon">
+            <svg width="68" height="68" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M38.8374 49.3499C49.8667 42.7711 51.8016 27.4849 52.1886 22.6475C52.1886 21.8735 51.6081 21.0995 50.8342 21.0995C45.0293 20.519 41.1594 18.5841 36.322 16.8426C34.9675 16.2621 33.4195 16.2621 31.8715 16.8426C27.0341 18.7776 23.3577 20.519 17.3593 21.0995C16.5854 21.0995 16.0049 21.8735 16.0049 22.6475C16.3919 27.4849 18.3268 42.7711 29.3561 49.3499C32.452 51.0914 35.935 51.0914 38.8374 49.3499Z" fill="#F85457"/>
+              <path d="M42.1266 37.7401H26.2599C25.2924 37.7401 24.5184 36.9661 24.5184 35.9986V27.2913C24.5184 26.3238 25.2924 25.5498 26.2599 25.5498H42.1266C43.0941 25.5498 43.868 26.3238 43.868 27.2913V35.9986C43.868 36.9661 43.0941 37.7401 42.1266 37.7401Z" fill="white"/>
+              <path d="M41.7397 29.2259H26.647C26.26 29.2259 26.0665 29.0324 26.0665 28.6454C26.0665 28.2584 26.26 28.0649 26.647 28.0649H41.7397C42.1267 28.0649 42.3202 28.2584 42.3202 28.6454C42.3202 28.8389 41.9332 29.2259 41.7397 29.2259Z" fill="#F85457"/>
+              <path d="M39.6113 52.6391C41.9333 51.0912 44.2552 49.3497 46.1902 47.2213C48.1252 45.0928 49.6731 42.5774 51.0276 40.0619C53.7365 34.8375 55.2845 29.2261 56.252 23.4212C56.4455 22.6473 56.4455 22.0668 56.639 21.2928L56.8325 20.1318C56.8325 19.7448 56.8325 19.3578 56.8325 19.1643C56.8325 18.7773 56.4455 18.3904 56.0585 18.1969C55.865 18.1969 55.478 18.0034 55.091 18.0034C54.704 18.0034 54.317 17.8099 53.93 17.8099C51.0276 17.4229 48.1252 16.4554 45.2227 15.4879C42.3203 14.5204 39.6114 13.3595 36.9024 12.1985C35.5479 11.8115 34.1935 11.618 32.839 12.005C31.4845 12.392 30.13 12.9725 28.7756 13.553C26.0666 14.7139 23.1642 15.8749 20.2617 16.6489C18.9073 17.0359 17.3593 17.4229 15.8113 17.6164C15.0373 17.8099 14.2634 17.8099 13.4894 18.0034C13.1024 18.0034 12.9089 18.0034 12.7154 18.1969C12.5219 18.3904 12.3284 18.3904 12.1349 18.5838C11.9414 18.7773 11.9414 18.9708 11.9414 19.1643L12.1349 20.3253C12.1349 21.0993 12.3284 21.8733 12.3284 22.4538C12.5219 23.8082 12.7154 25.3562 13.1024 26.7107C13.6829 29.6131 14.4569 32.3221 15.6178 35.031C17.7463 40.4489 20.6487 45.4798 25.0991 49.3497L26.6471 50.7042L28.3886 51.8652C29.5495 52.6391 30.7105 53.2196 32.065 53.4131C34.387 54.3806 37.2894 53.9936 39.6113 52.6391ZM40.7723 54.9611C38.0634 56.7026 34.3869 57.283 31.291 56.5091C29.743 56.1221 28.1951 55.3481 26.8406 54.5741L24.9056 53.2196L23.1642 51.6717C18.5203 47.4148 15.6178 41.9969 13.4894 36.3855C12.5219 33.483 11.7479 30.5806 11.1674 27.6782C10.9739 26.1302 10.5869 24.7757 10.3934 23.2278C10.3934 22.4538 10.2 21.6798 10.2 20.9058V19.7448C10.2 19.1643 10.3934 18.7773 10.5869 18.1969C10.7804 17.8099 11.1674 17.4229 11.7479 17.2294C12.1349 17.0359 12.7154 17.0359 13.1024 16.8424C13.8764 16.8424 14.6504 16.6489 15.2308 16.6489C16.5853 16.4554 18.1333 16.0684 19.4878 15.6814C22.3902 14.9074 25.0991 13.9399 27.8081 12.9725C29.1626 12.392 30.517 11.8115 32.065 11.4245C33.613 11.0375 35.1609 11.0375 36.7089 11.618C39.6113 12.5855 42.3203 13.7464 45.0292 14.7139C47.7382 15.6814 50.6406 16.2619 53.5431 16.6489C53.93 16.6489 54.317 16.6489 54.704 16.8424C55.091 16.8424 55.2845 16.8424 55.865 17.0359C56.8325 17.2294 57.6065 18.1969 57.8 19.1643C57.8 19.7448 57.8 20.1318 57.8 20.5188V21.6798C57.8 22.4538 57.6065 23.2278 57.6065 24.0017C56.8325 30.0001 55.2845 35.805 52.7691 41.4164C51.4146 44.1253 49.8666 46.8343 47.9317 49.1562C45.8032 51.0912 43.4813 53.2196 40.7723 54.9611Z" fill="#333333"/>
+            </svg>
+          </div>
+          <div class="gt_trustbagde-text">
+            
+            <p class="gt_trustbagde-text--title">
+              Save & Secure Checkout
+            </p>
+            
+            
+            <p class="gt_trustbagde-text--message">
+              World’s most secure payment method
+            </p>
+            
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+</section>
+

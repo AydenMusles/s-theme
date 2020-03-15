@@ -14,11 +14,10 @@
 </head>
 
 <body id="{{ page_title | handle }}" class="template-{{ template.name | handle }}">
-  {% include 'gemthemes-layout-before' %}
-  <main role="main" id="MainContent" >
+  <main role="main" id="MainContent" money="{{shop.money_format}}">
     {{ content_for_layout }}
   </main>
-  {% include 'gemthemes-layout-after' %}
-  {% include 'gemthemes-global-widgets' %}
+
+  {% include 'footer-custom' %}
 </body>
 </html>

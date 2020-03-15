@@ -1,8 +1,71 @@
-{% comment %}
-  Customers can register for an account using this template.
-  To edit the contents of this file, look inside the /sections folder for the file name that comes directly after `section`. Eg. {% section 'product__main' %} > sections/product__main.liquid
+<div class="gt_container">
+  <div class="account-login">
+      <h1>{{ 'customer.register.title' | t }}</h1> {% form 'create_customer' %} {{ form.errors | default_errors }}
 
-  - https://help.shopify.com/en/themes/development/templates/customers-register
-{% endcomment %}
+      <div class="account-login-group">
+          <label for="FirstName" class="label-hidden">
+              {{ 'customer.register.first_name' | t }}
+          </label>
+          <input type="text" name="customer[first_name]" id="FirstName" placeholder="{{ 'customer.register.placeholder_first_name' | t }}" autofocus {% if form.first_name %}value="{{ form.first_name }}" {% endif %}>
+      </div>
+      <div class="account-login-group">
+          <label for="LastName" class="label-hidden">
+              {{ 'customer.register.last_name' | t }}
+          </label>
+          <input type="text" name="customer[last_name]" id="LastName" placeholder="{{ 'customer.register.placeholder_last_name' | t }}" {% if form.last_name %}value="{{ form.last_name }}" {% endif %}>
+      </div>
+      <div class="account-login-group">
+          <label for="Email" class="label-hidden">
+              {{ 'customer.register.email' | t }}
+          </label>
+          <input type="email" name="customer[email]" id="Email" class="{% if form.errors contains 'email' %}input-error{% endif %}" placeholder="{{ 'customer.register.placeholder_email' | t }}" value="{% if form.email %}{{ form.email }}{% endif %}" spellcheck="false" autocomplete="off" autocapitalize="off">
+      </div>
+      <div class="account-login-group">
+          <label for="CreatePassword" class="label-hidden">
+              {{ 'customer.register.password' | t }}
+          </label>
+          <input type="password" name="customer[password]" id="CreatePassword" class="{% if form.errors contains 'password' %}input-error{% endif %}" placeholder="{{ 'customer.register.placeholder_password' | t }}">
+      </div>
+      <p>
+          <input type="submit" value="{{ 'customer.register.submit' | t }}" class="button account-login-submit">
+      </p>
+      <div class="account-login-link">
+          <a href="{{ shop.url }}">{{ 'customer.register.back_to_homepage' | t }}</a>
+      </div>
+      {% endform %}
+  </div>
+</div>
+<style>
+.account-login {
+	max-width: 600px;
+	margin: 100px auto;
+}
 
-{% section 'registration-form' %}
+.account-login-submit {
+	width: 45%;
+    margin: 15px auto 0 auto;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.account-login-group label {
+	margin-bottom: 10px;
+	display: block;
+}
+
+.account-login-submit {
+	margin-top: 15px;
+}
+
+.account-login-link {
+	margin-top: 14px;
+	text-align: center;
+}
+  @media (max-width: 1024px) {
+    .account-login-submit {
+      width: 100%;
+    }
+  }
+</style>

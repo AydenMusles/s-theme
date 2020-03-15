@@ -1,8 +1,93 @@
+<div class="gt_container">
+  <div class="account-home">
+      <div class="account-home-center">
+          <h1>{{ 'customer.account.title' | t }}</h1>
+          <a>{{ 'customer.account.log_out' | t | customer_logout_link }}</a>
+      </div>
+      <div class="account-home-history">
+          <h2>{{ 'customer.account.title_orrder_history' | t }}</h2> {% paginate customer.orders by 20 %} {% if customer.orders.size != 0 %}
+          <div class="account-home-table-responsive">
+              <table>
+                  <thead>
+                      <tr>
+                          <th>{{ 'customer.account.label_order' | t }}</th>
+                          <th>{{ 'customer.account.label_date' | t }}</th>
+                          <th>{{ 'customer.account.label_payment_status' | t }}</th>
+                          <th>{{ 'customer.account.label_fulfillment_status' | t }}</th>
+                          <th>{{ 'customer.account.label_total' | t }}</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for order in customer.orders %}
+                      <tr class="responsive-table-row">
+                          <td data-label="{{ 'customer.account.label_order' | t }}">{{ order.name | link_to: order.customer_url }}</td>
+                          <td data-label="{{ 'customer.account.label_date' | t }}">{{ order.created_at | time_tag: format: 'date' }}</td>
+                          <td data-label="{{ 'customer.account.label_payment_status' | t }}">{{ order.financial_status_label }}</td>
+                          <td data-label="{{ 'customer.account.label_fulfillment_status' | t }}">{{ order.fulfillment_status_label }}</td>
+                          <td data-label="{{ 'customer.account.label_total' | t }}">{{ order.total_price | money }}</td>
+                      </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+          </div>
+          {% else %}
+          <p>You haven't placed any orders yet.</p>
+          {% endif %} {% if paginate.pages > 1 %} {% include 'pagination' %} {% endif %} {% endpaginate %}
+      </div>
+      <div class="account-home-address">
+          <h2>{{ 'customer.account.detail' | t }}</h2> {{ customer.default_address | format_address }}
+          <a class="button bt_view_address" href="/account/addresses">{{ 'customer.account.view_address' | t }} ({{ customer.addresses_count }})</a>
+      </div>
+  </div>
+</div>
+<style>
+.account-home {
+	max-width: 600px;
+	margin: 100px auto;
+}
 
-{% comment %}
-  Main view that shows a summary of your customer's account. When you enable customer accounts, Shopify stores password-protected information about a customer's identity, order history, and current order status. Your customers' details, such as address information, will be pre-filled from the stored information during checkout.
+.account-home-center {
+	text-align: center;
+}
 
-  - https://help.shopify.com/en/manual/customers/customer-accounts
-{% endcomment %}
+.account-home h1 {
+	margin-bottom: 20px;
+}
 
-{% section 'account-details' %}
+.account-home h2 {
+	margin-bottom: 20px;
+}
+
+.account-home-history {
+	margin-bottom: 30px;
+	margin-top: 30px;
+}
+
+.account-home-address {}
+
+.account-home-table-responsive {
+	width: 100%;
+	overflow: hidden;
+	overflow-x: auto;
+}
+
+.account-home table {
+	border-collapse: collapse;
+	width: 600px;
+}
+
+.account-home table td,
+.account-home table th {
+	text-align: left;
+	border: 1px solid #e8e9eb;
+	padding: 10px 14px;
+}
+
+.account-home table th {
+	font-weight: bold;
+}
+  
+.bt_view_address{
+  margin-top: 15px; 
+}
+</style>

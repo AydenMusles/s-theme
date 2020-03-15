@@ -1,8 +1,0 @@
-<script>
-    Shopify.Cart.ShippingCalculator.show( {
-      submitButton: {{ settings.shipping_calculator_submit_button_label | default: 'Calculate shipping' | json }},
-      submitButtonDisabled: {{ settings.shipping_calculator_submit_button_label_disabled | default: 'Calculating...' | json }},
-      {% if customer and customer.default_address.country %}customerIsLoggedIn: true,{% endif %}
-      moneyFormat: {{ shop.money_with_currency_format | json }}
-    });
-</script>
