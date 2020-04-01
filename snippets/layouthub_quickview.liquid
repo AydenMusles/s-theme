@@ -1,5 +1,4 @@
- 
- {%- comment-%}
+{%- comment-%}
 	Author: Layouthub
 	Email:support@layouthub.com
 	Description: The snippet help integrate Third party quickview app with Layouthub
@@ -10,11 +9,11 @@
 {%- if shop.metafields.layouthub and shop.metafields.layouthub.app_quickview -%}
 	{%- assign quickview_platform = shop.metafields.layouthub.app_quickview -%}
 {%- endif -%}
-{% case quickview_platform %}
+{%- case quickview_platform -%}
 	{%- when 'none'-%}
 		
-	{% when 'quick-view' %}
-		{% render 'sca-quick-view',  product: product %}
-	{% else %}
-		<div class="lh-quick-view" data-handle="{{product.handle}}">{%- if quickview_content-%}{{quickview_content}}{%- endif -%}</div>
-{% endcase %}
+	{%- when 'quick-view' -%}
+		{%- render 'sca-quick-view',  product: product -%}
+	{%- else -%}
+		<div class="lh-quick-view" data-handle="{{product.handle}}">{%- if quickview_content-%}{{-quickview_content-}}{%- endif -%}</div>
+{%- endcase -%}
