@@ -1,0 +1,49 @@
+<div class="site-nav site-nav--icons">
+  <div class="site-nav__icons">
+    {% if shop.customer_accounts_enabled %}
+      <a class="site-nav__link site-nav__link--icon small--hide" href="{{ routes.account_url }}">
+        {% include 'icon-user' %}
+        <span class="icon__fallback-text">
+          {% if customer %}
+            {{ 'layout.customer.account' | t }}
+          {% else %}
+            {{ 'layout.customer.log_in' | t }}
+          {% endif %}
+        </span>
+      </a>
+    {% endif %}
+
+    {% if section.settings.header_search_enable %}
+      <a href="{{ routes.search_url }}" class="site-nav__link site-nav__link--icon js-modal-open-search-modal js-no-transition{% if menu_alignment == 'center' or menu_alignment == 'center-split' %} medium-up--hide{% endif %}">
+        {% include 'icon-search' %}
+        <span class="icon__fallback-text">{{ 'general.search.title' | t }}</span>
+      </a>
+    {% endif %}
+
+    {% if menu_alignment == 'left'
+       or menu_alignment == 'left-center'
+       or menu_alignment == 'right' %}
+      <button
+        type="button"
+        class="site-nav__link site-nav__link--icon js-toggle-slide-nav{% if menu_alignment == 'left' or menu_alignment == 'left-center' or menu_alignment == 'right' %} medium-up--hide{% endif %}{% if mobile_menu_style == 'thumb' %} hide{% endif %}">
+        {% include 'icon-hamburger' %}
+        {% include 'icon-close' %}
+        <span class="icon__fallback-text">{{ 'general.drawers.navigation' | t }}</span>
+      </button>
+    {% endif %}
+
+    {% unless settings.cart_type == 'sticky' %}
+      <a href="{{ routes.cart_url }}" class="site-nav__link site-nav__link--icon site-nav__link--cart js-drawer-open-cart js-no-transition" aria-controls="CartDrawer">
+        <span class="cart-link">
+          {% include 'icon-bag' %}
+          <span class="icon__fallback-text">{{ 'layout.cart.title' | t }}</span>
+          <span class="cart-link__bubble{% if cart.item_count > 0 %} cart-link__bubble--visible{% endif %}">
+            <span class="cart-link__count" aria-hidden="true">
+              {{ cart.item_count }}
+            </span>
+          </span>
+        </span>
+      </a>
+    {% endunless %}
+  </div>
+</div>

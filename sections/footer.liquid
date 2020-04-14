@@ -1,0 +1,125 @@
+<footer class="site-footer text-center">
+  {% if section.settings.show_newsletter %}
+    <div class="site-footer__section site-footer__section--newsletter" data-aos>
+      <div class="page-width">
+        {% if section.settings.newsletter_title != blank %}
+          <div class="h2 appear-delay">{{ section.settings.newsletter_title }}</div>
+        {% endif %}
+
+        {% if section.settings.newsletter_richtext != blank %}
+          <div class="rte rte--block appear-delay-1">
+            {{ section.settings.newsletter_richtext }}
+          </div>
+        {% endif %}
+
+        <div class="appear-delay-2">
+          {% include 'newsletter-form', section_id: section.id, snippet_context: 'footer' %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="page-width">
+    {% if settings.enable_currencies %}
+      {% include 'currency-picker' %}
+    {% endif %}
+
+    {% if section.settings.show_social_icons %}
+      <div class="site-footer__section">
+        {% include 'social-icons', social_class: 'footer__social' %}
+      </div>
+    {% endif %}
+
+    {% if linklists[section.settings.menu].links.size > 0 %}
+      <div class="site-footer__section">
+        <ul class="no-bullets inline-list site-footer__linklist">
+          {% for link in linklists[section.settings.menu].links %}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    {% if section.settings.show_payment_icons %}
+      {% unless shop.enabled_payment_types == empty %}
+        <div class="site-footer__section">
+          <ul class="inline-list payment-icons">
+            {% for type in shop.enabled_payment_types %}
+              <li class="icon--payment">
+                {{ type | payment_type_svg_tag: class:'icon icon--full-color' }}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endunless %}
+    {% endif %}
+
+
+    <div class="site-footer__section site-footer__copyright">
+      {% if section.settings.show_copyright %}
+        <span>
+          &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}
+          {% if section.settings.copyright_text != blank %}
+            {{ section.settings.copyright_text }}
+          {% endif %}
+        </span>
+      {% endif %}
+      <span class="footer__powered_by"><a href="/clickcommerce">Powered by ClickCommerce</a></span>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_newsletter",
+        "label": "Show newsletter signup",
+        "info": "Customers who subscribe will have their email address added to the 'accepts marketing' [customer list](/admin/customers?query=&accepts_marketing=1).",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "newsletter_title",
+        "label": "Newsletter heading",
+        "default": "Sign up and save"
+      },
+      {
+        "type": "richtext",
+        "id": "newsletter_richtext",
+        "label": "Text",
+        "default": "<p>Let customers know about the key benefits of joining your newsletter.</p>"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_social_icons",
+        "label": "Show social icons",
+        "default": true
+      },
+      {
+        "type": "link_list",
+        "id": "menu",
+        "label": "Choose a menu",
+        "default": "footer",
+        "info": "Optional. This menu won't show dropdown items"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_payment_icons",
+        "label": "Show payment icons"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_copyright",
+        "label": "Show copyright"
+      },
+      {
+        "type": "text",
+        "id": "copyright_text",
+        "label": "Additional copyright text"
+      }
+    ]
+  }
+{% endschema %}
