@@ -35,7 +35,7 @@
     "type_navigation_size": 24,
     "animate_images": true,
     "animate_page_transitions": true,
-    "logo_loader_image": "",
+    "logo_loader_image": "shopify:\/\/shop_images\/3FA9AC02-B189-4522-B72C-C8BE0A483209.png",
     "desktop_loader_width": 140,
     "mobile_loader_width": 130,
     "product_hover_details": false,
@@ -138,7 +138,7 @@
       "footer": {
         "type": "footer",
         "settings": {
-          "show_newsletter": true,
+          "show_newsletter": false,
           "newsletter_title": "Sign up and save",
           "newsletter_richtext": "<p>Let customers know about the key benefits of joining your newsletter.<\/p>",
           "show_social_icons": true,
@@ -331,7 +331,7 @@
       "newsletter-popup": {
         "type": "newsletter-popup",
         "settings": {
-          "mode": "enabled",
+          "mode": "disabled",
           "popup_seconds": 5,
           "popup_days": 2,
           "popup_title": "Important:",
