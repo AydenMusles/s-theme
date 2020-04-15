@@ -1,14 +1,32 @@
-$colorTextBody: {{ settings.color_body_text | default: '#1c1d1d' }};
+/*============================================================================
+  Table of Contents
+
+  #General Variables
+  #Sass Mixins
+  #Base Styles
+  #Media Queries
+  #Print Styles
+  #Keyframe Animations
+==============================================================================*/
+
+/*============================================================================
+  #General Variables
+==============================================================================*/
+// Timber Colors
 $colorBody: {{ settings.color_body_bg }};
-$colorBorder: $colorTextBody;
+$colorBorder: {{ settings.color_borders }};
 
 // Gift Card Colors
-$colorGiftText: {{ settings.color_body_text }}; // note, this is always on a white background
-$colorGiftBorder: {{ settings.color_button }};
+$colorGiftText: #999; // note, this is always on a white background
+$colorGiftBorder: {{ settings.color_primary }};
 
 // Sizes
 $gutter: 30px;
 
+/*============================================================================
+  #Sass Mixins
+    - Copied from timber.scss.liquid
+==============================================================================*/
 .clearfix {
   &:after {
     content: "";
@@ -25,16 +43,17 @@ $gutter: 30px;
   *zoom: 1;
 }
 
+@mixin prefix($property, $value) {
+  -webkit-#{$property}: #{$value};
+  -moz-#{$property}: #{$value};
+  -ms-#{$property}: #{$value};
+  -o-#{$property}: #{$value};
+  #{$property}: #{$value};
+}
+
 /*============================================================================
   #Base Styles
 ==============================================================================*/
-.template-giftcard {
-  .site-header__logo a,
-  .header-logo a {
-    color: $colorTextBody;
-  }
-}
-
 .template-giftcard,
 .template-giftcard body {
   background: $colorBody;
@@ -44,7 +63,7 @@ $gutter: 30px;
   }
 }
 
-.template-giftcard .page-width {
+.template-giftcard .wrapper {
   max-width: 588px;
 
   img, object, iframe {
@@ -58,11 +77,6 @@ $gutter: 30px;
   text-align: center;
   -webkit-animation: fadein 0.5s ease-in-out both 0.4s;
   animation: fadein 0.5s ease-in-out both 0.4s;
-
-  a {
-    display: block;
-    margin: 0 auto;
-  }
 }
 
 .shop-url {
@@ -75,22 +89,27 @@ $gutter: 30px;
 }
 
 .giftcard__border {
-  padding: 1.5em;
+  background-color: $colorGiftBorder;
+  border-radius: 4px;
+  border: 1px solid darken($colorGiftBorder, 5%);
+  padding: 1em;
   -webkit-animation: container-slide 0.8s ease-in-out;
-  animation: container-slide 0.8s ease-in-out;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  animation: container-slide 0.8s ease-in-out
 }
 
 .giftcard__content {
   @include clearfix;
-  background-color: $colorBody;
+  background-color: #fff;
   color: $colorGiftText;
+  border: 1px solid darken($colorGiftBorder, 5%);
+  border-radius: 3px;
   -webkit-animation: cardslide 0.8s ease-in-out;
   animation: cardslide 0.8s ease-in-out;
 }
 
 .giftcard__header {
   @include clearfix;
+  border-bottom: 1px solid $colorBorder;
   padding: $gutter / 2;
 }
 
@@ -184,7 +203,6 @@ $gutter: 30px;
 }
 
 .giftcard__code__text {
-  font-weight: 400;
   font-size: 1.875em;
   text-transform: uppercase;
   border-radius: 2px;
@@ -192,7 +210,7 @@ $gutter: 30px;
   padding: .4em .5em;
   display: inline-block;
   vertical-align: baseline;
-  color: $colorGiftText;
+  color: #777;
   line-height: 1;
 
   .disabled & {
@@ -260,7 +278,6 @@ $gutter: 30px;
   background: #333;
   background: rgba(51,51,51,0.9);
   min-height: 14px;
-  font-weight: 400;
   font-size: 12px;
   text-decoration: none;
   line-height: 16px;
@@ -283,9 +300,10 @@ $gutter: 30px;
 
 .giftcard__actions {
   position: relative;
+  border-top: 1px solid $colorBorder;
+  padding: $gutter ($gutter / 2);
   text-align: center;
   overflow: hidden;
-  padding-bottom: 1em;
 }
 
 .action-link {
@@ -293,9 +311,7 @@ $gutter: 30px;
   left: $gutter / 2;
   top: 50%;
   font-size: 0.875em;
-  font-weight: bold;
   display: block;
-  padding-top: 4px;
   text-transform: uppercase;
   letter-spacing: .2em;
   color: lighten($colorGiftText, 10%);
@@ -313,8 +329,8 @@ $gutter: 30px;
   width: 17px;
   height: 17px;
   vertical-align: middle;
-  margin-right: 10px;
-  opacity: 1;
+  margin-right: 5px;
+  opacity: 0.25;
   background: {
     image: url('//cdn.shopify.com/s/assets/gift-card/icon-print-164daa1ae32d10d1f9b83ac21b6f2c70.png');
     repeat: no-repeat;
@@ -334,10 +350,10 @@ $gutter: 30px;
   text-align: center;
   padding: ($gutter * 2) 0;
   -webkit-animation: fadein 0.5s ease-in-out both 0.4s;
-  animation: fadein 0.5s ease-in-out both 0.4s;
+  animation: fadein 0.5s ease-in-out both 0.4s
 }
 
-#QrCode {
+#qr-code {
   img {
     padding: $gutter;
     border: 1px solid $colorBorder;
@@ -346,6 +362,12 @@ $gutter: 30px;
   }
 }
 
+
+/*============================================================================
+  #Media Queries
+==============================================================================*/
+
+/*================ Medium-down width ================*/
 @media screen and (max-width: 580px) {
   .giftcard {
     font-size: 12px;
@@ -429,6 +451,8 @@ $gutter: 30px;
   }
 
   html, body {
+    -webkit-text-size-adjust: 100%;
+    -webkit-print-color-adjust: exact;
     background-color: #fff;
   }
 
@@ -439,6 +463,8 @@ $gutter: 30px;
   .giftcard__content,
   .giftcard__border {
     border: 0 none;
+    padding: 0;
+    background-color: #fff;
   }
 
   .giftcard__actions,

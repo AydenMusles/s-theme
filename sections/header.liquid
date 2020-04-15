@@ -1,364 +1,645 @@
-{%- assign main_menu = linklists[section.settings.main_menu_link_list] -%}
-
-{% comment %}
-  menu_alignment options:
-    - left
-    - left-center
-    - center-left
-    - center-split
-    - center
-    - right
-{% endcomment %}
-
-{%- assign menu_alignment = section.settings.main_menu_alignment -%}
-{%- assign logo_alignment = 'left' -%}
-{%- if menu_alignment == 'center-left'
-   or menu_alignment == 'center-split'
-   or menu_alignment == 'center' -%}
-  {%- assign logo_alignment = 'center' -%}
-{%- endif -%}
-{%- if menu_alignment == 'right' -%}
-  {%- assign logo_alignment = 'left-right' -%}
-{%- endif -%}
-
-{%- if main_menu == blank -%}
-  {%- assign logo_alignment = 'center' -%}
-{%- endif -%}
-
-{% comment %}
-  mobile_menu_style options:
-    - top (not fully implemented yet)
-    - thumb
-{% endcomment %}
-{%- assign mobile_menu_style = 'thumb' -%}
-
-{% include 'slide-nav' %}
-{% if settings.cart_type == 'sticky' %}
-  {% include 'sticky-cart' %}
-{% endif %}
-
-{%- assign template_name = template | replace: '.', ' ' | truncatewords: 2, '' | handle -%}
-
-{%- assign overlay_header = false -%}
-{% if template_name == 'index' and section.settings.sticky_index %}
-  {%- assign overlay_header = true -%}
-{% endif %}
-{% if template_name == 'collection' and collection.image and section.settings.sticky_collection %}
-  {%- assign overlay_header = true -%}
-{% endif %}
-
-{% style %}
-  .slide-nav,
-  .slide-nav button {
-    font-size: {{ settings.type_navigation_size }}px;
+<style>
+  {%- assign logo_width = 695 -%}
+  {%- assign logo_max_width = section.settings.logo_max_width | times: 1 -%}
+  {% if logo_max_width < logo_width %}
+    {%- assign logo_width = logo_max_width -%}
+  {% endif %}
+  .logo__image-wrapper {
+    max-width: {{ logo_width }}px;
   }
-
-  {% if mobile_menu_style == 'thumb' %}
-    body {
-      {% comment %}
-        Thumb menu button height + padding + 40
-      {% endcomment %}
-      padding-bottom: 148px;
+  /*================= If logo is above navigation ================== */
+  {% if section.settings.nav_below_logo %}
+    .site-nav {
+      {% if section.settings.show_header_lines %}
+        border-top: 1px solid {{ settings.color_borders }};
+        border-bottom: 1px solid {{ settings.color_borders }};
+      {% endif %}
+      margin-top: 30px;
     }
+
+    {% unless section.settings.left_aligned_logo %}
+      .logo__image-wrapper {
+        margin: 0 auto;
+      }
+    {% endunless %}
   {% endif %}
 
-  {% if mobile_menu_style == 'top' %}
-    body.screen-layer-open {
-      {% comment %}
-        Space for the close modal button
-      {% endcomment %}
-      padding-bottom: 40px;
+  /*============ If logo is on the same line as navigation ============ */
+  {% unless section.settings.nav_below_logo or section.settings.show_header_lines == false %}
+    .site-header .grid--full {
+      border-bottom: 1px solid {{ settings.color_borders }};
+      padding-bottom: 30px;
     }
-  {% endif %}
+  {% endunless %}
 
-  {% if overlay_header %}
-    @media only screen and (min-width: 769px) {
-      .collection-hero__content .section-header--hero {
-        margin-top: 40px;
+
+  {% unless section.settings.nav_below_logo %}
+    @media screen and (min-width: 769px) {
+      .site-nav {
+        text-align: right!important;
       }
     }
-  {% endif %}
-{% endstyle %}
+  {% endunless %}
+</style>
 
 <div data-section-id="{{ section.id }}" data-section-type="header-section">
-  <div
-    data-header-style="{{ section.settings.header_style }}"
-    class="header-wrapper{% if overlay_header %} header-wrapper--overlay is-light{% endif %}">
+  <div class="header-bar">
+    <div class="wrapper medium-down--hide">
+      <div class="post-large--display-table">
 
-    {% if section.settings.show_announcement %}
-      {% if section.settings.show_announcement_home_only %}
-        {% if template == 'index' %}
-          {% include 'announcement-bar' %}
-        {% endif %}
-      {% else %}
-        {% include 'announcement-bar' %}
-      {% endif %}
-    {% endif %}
+        {% if section.settings.show_announcement or section.settings.header_search_enable %}
+          <div class="header-bar__left post-large--display-table-cell">
 
-    {% comment %}
-      Logo is used as a between-screen loader, so we only
-      show the mobile logo on the home page (setting to override)
-    {% endcomment %}
+            {% comment %}
+              Add social links to header
+            {% endcomment %}
 
-    {%- assign mobile_logo_only = true -%}
-
-    <header
-      class="site-header{% if section.settings.logo_hide_mobile %}{% unless template_name == 'index' %} small--hide{% endunless %}{% endif %}"
-      data-overlay="{{ overlay_header }}">
-      <div class="page-width">
-        <div
-          class="header-layout header-layout--{{ menu_alignment }}{% if mobile_logo_only %} header-layout--mobile-logo-only{% endif %}"
-          data-logo-align="{{ logo_alignment }}">
-
-          {% if logo_alignment == 'left' or logo_alignment == 'left-right' %}
-            <div class="header-item header-item--logo">
-              {% include 'header-logo-block' %}
+            {% comment %}
+            <div class="header-bar__module header-bar__module--list">
+              {% include 'social-links' %}
             </div>
-          {% endif %}
+            {% endcomment %}
 
-          {% if logo_alignment == 'left' %}
-            <div role="navigation" aria-label="Primary"
-              class="header-item header-item--navigation{% if menu_alignment == 'left-center' %} text-center{% endif %} small--hide">
-              {% include 'header-desktop-nav' %}
-            </div>
-          {% endif %}
-
-          {% if logo_alignment == 'center' %}
-            <div class="header-item header-item--left header-item--navigation small--hide" role="navigation" aria-label="Primary">
-              {% if menu_alignment == 'center' or menu_alignment == 'center-split' %}
-                {% if section.settings.header_search_enable %}
-                  <div class="site-nav">
-                    <a href="{{ routes.search_url }}" class="site-nav__link site-nav__link--icon js-modal-open-search-modal js-no-transition">
-                      {% include 'icon-search' %}
-                      <span class="icon__fallback-text">{{ 'general.search.title' | t }}</span>
-                    </a>
-                  </div>
+            {% if section.settings.show_announcement %}
+              <div class="header-bar__module header-bar__message">
+                {% if section.settings.announcement_link != blank %}
+                  <a href="{{ section.settings.announcement_link }}">
                 {% endif %}
-              {% endif %}
-
-              {% if menu_alignment == 'center-left' %}
-                {% include 'header-desktop-nav' %}
-              {% endif %}
-            </div>
-
-            {% if menu_alignment == 'center-split' %}
-              {% include 'header-split-nav' %}
+                  {{ section.settings.header_text | escape }}
+                {% if section.settings.announcement_link != blank %}
+                  </a>
+                {% endif %}
+              </div>
+            {% elsif section.settings.header_search_enable %}
+              <div class="header-bar__module header-bar__search">
+                {% include 'search-bar' with 'header' %}
+              </div>
             {% endif %}
 
-            {% if menu_alignment != 'center-split' %}
-              <div class="header-item header-item--logo">
-                {% include 'header-logo-block' %}
+          </div>
+        {% endif %}
+
+        <div class="header-bar__right post-large--display-table-cell">
+
+          {% if shop.customer_accounts_enabled %}
+            <ul class="header-bar__module header-bar__module--list">
+              {% if customer %}
+                <li>
+                  <a href="{{ routes.account_url }}">{{ 'layout.customer.account' | t }}</a>
+                </li>
+                <li>
+                  {{ 'layout.customer.log_out' | t | customer_logout_link }}
+                </li>
+              {% else %}
+                <li>
+                  {{ 'layout.customer.log_in' | t | customer_login_link }}
+                </li>
+                <li>{{ 'layout.customer.or' | t }}</li>
+                <li>
+                  {{ 'layout.customer.create_account' | t | customer_register_link }}
+                </li>
+              {% endif %}
+            </ul>
+          {% endif %}
+
+          <div class="header-bar__module">
+            <span class="header-bar__sep" aria-hidden="true"></span>
+            <a href="{{ routes.cart_url }}" class="cart-page-link">
+              <span class="icon icon-cart header-bar__cart-icon" aria-hidden="true"></span>
+            </a>
+          </div>
+
+          <div class="header-bar__module">
+            <a href="{{ routes.cart_url }}" class="cart-page-link">
+              {{ 'layout.cart.title' | t }}{% unless cart.item_count == 0 %}:{% endunless %}
+              <span class="cart-count header-bar__cart-count{% if cart.item_count == 0 %} hidden-count{% endif %}">{{ cart.item_count }}</span>
+            </a>
+          </div>
+
+          {% if section.settings.header_search_enable %}
+            {% if section.settings.show_announcement %}
+              <div class="header-bar__module header-bar__search">
+                {% include 'search-bar' with 'header' %}
               </div>
             {% endif %}
           {% endif %}
 
-          {% if logo_alignment == 'left-right' %}
-            <div
-              role="navigation" aria-label="Primary"
-              class="header-item header-item--navigation text-right small--hide">
-              {% include 'header-desktop-nav' %}
-            </div>
-          {% endif %}
-
-          {% comment %}
-            Center mobile logo if icons are not visible
-          {% endcomment %}
-          <div class="header-item header-item--icons{% if mobile_logo_only %} small--hide{% endif %}">
-            {% include 'header-icons' %}
-          </div>
         </div>
-
-        {% if menu_alignment == 'center' %}
-          <div role="navigation" aria-label="Primary" class="text-center">
-            {% include 'header-desktop-nav' %}
-          </div>
-        {% endif %}
       </div>
-    </header>
+    </div>
+
+    <div class="wrapper post-large--hide announcement-bar--mobile">
+      {% if section.settings.show_announcement %}
+        {% if section.settings.announcement_link != blank %}
+          <a href="{{ section.settings.announcement_link }}">
+        {% endif %}
+          <span>{{ section.settings.header_text | escape }}</span>
+        {% if section.settings.announcement_link != blank %}
+          </a>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    <div class="wrapper post-large--hide">
+      {% unless section.settings.nav_menu == blank and section.settings.header_search_enable == false and shop.customer_accounts_enabled == false %}
+        <button type="button" class="mobile-nav-trigger" id="MobileNavTrigger" aria-controls="MobileNav" aria-expanded="false">
+          <span class="icon icon-hamburger" aria-hidden="true"></span>
+          {{ 'layout.navigation.menu' | t }}
+        </button>
+      {% endunless %}
+      <a href="{{ routes.cart_url }}" class="cart-page-link mobile-cart-page-link">
+        <span class="icon icon-cart header-bar__cart-icon" aria-hidden="true"></span>
+        {{ 'layout.cart.title' | t }} <span class="cart-count{% if cart.item_count == 0 %} hidden-count{% endif %}">{{ cart.item_count }}</span>
+      </a>
+    </div>
+    {% include 'mobile-nav' with linklists[section.settings.nav_menu] %}
   </div>
 
-  {% if mobile_menu_style == 'thumb' %}
-    {%- if main_menu != blank -%}
-      <div class="site-nav__thumb-menu site-nav__thumb-menu--inactive">
-        <button
-          type="button"
-          class="btn site-nav__thumb-button js-toggle-slide-nav">
-          {% include 'icon-hamburger' %}
-          {% include 'icon-close' %}
-          <span class="icon-menu-label">{{ 'general.drawers.navigation' | t }}</span>
-        </button>
+  <header class="site-header" role="banner">
+    <div class="wrapper">
 
-        <a href="{{ routes.cart_url }}" class="site-nav__thumb-cart js-drawer-open-cart js-no-transition" aria-controls="CartDrawer">
-          <span class="cart-link">
-            {% include 'icon-bag' %}
-            <span class="icon__fallback-text">{{ 'layout.cart.title' | t }}</span>
-            <span class="cart-link__bubble{% if cart.item_count > 0 %} cart-link__bubble--visible{% endif %}">
-              <span class="cart-link__count" aria-hidden="true">
-                {{ cart.item_count }}
-              </span>
-            </span>
-          </span>
-        </a>
-      </div>
-    {%- endif -%}
-  {% endif %}
+      {% if section.settings.nav_below_logo %}
+        <div class="grid--full">
+          <div class="grid__item">
+            {% if request.page_type == 'index' %}
+              <h1 class="site-header__logo{% if section.settings.logo == blank %}{% unless section.settings.left_aligned_logo == false and section.settings.nav_below_logo %} post-large--left{% endunless %}{% endif %}" itemscope itemtype="http://schema.org/Organization">
+            {% else %}
+              <div class="h1 site-header__logo{% if section.settings.logo == blank %}{% unless section.settings.left_aligned_logo == false and section.settings.nav_below_logo %} post-large--left{% endunless %}{% endif %}" itemscope itemtype="http://schema.org/Organization">
+            {% endif %}
+              {% if section.settings.logo != blank %}
+                <noscript>
+                  {% capture image_size %}{{ logo_width | escape }}x{% endcapture %}
+                  <div class="logo__image-wrapper">
+                    {{ section.settings.logo | img_url: image_size | img_tag: shop.name }}
+                  </div>
+                </noscript>
+                <div class="logo__image-wrapper supports-js">
+                  <a href="{{ routes.root_url }}" itemprop="url" style="padding-top:{{ 1 | divided_by: section.settings.logo.aspect_ratio | times: 100}}%;">
+                    {% assign img_url = section.settings.logo | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+                    <img class="logo__image lazyload"
+                         src="{{ section.settings.logo | img_url: '300x300' }}"
+                         data-src="{{ img_url }}"
+                         data-widths="[120, 180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 1944, 2048]"
+                         data-aspectratio="{{ section.settings.logo.aspect_ratio }}"
+                         data-sizes="auto"
+                         alt="{{ shop.name | escape }}"
+                         itemprop="logo">
+                  </a>
+                </div>
+              {% else %}
+                <a href="{{ routes.root_url }}" itemprop="url">{{ shop.name }}</a>
+              {% endif %}
+            {% if request.page_type == 'index' %}
+              </h1>
+            {% else %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="grid--full medium-down--hide">
+          <div class="grid__item">
+            {% include 'site-nav' with linklists[section.settings.nav_menu] %}
+          </div>
+        </div>
+      {% else %}
+        <div class="grid--full post-large--display-table">
+          <div class="grid__item post-large--one-third post-large--display-table-cell">
+            {% if request.page_type == 'index' %}
+              <h1 class="site-header__logo{% if section.settings.logo == blank %}{% unless section.settings.left_aligned_logo == false and section.settings.nav_below_logo %} post-large--left{% endunless %}{% endif %}" itemscope itemtype="http://schema.org/Organization">
+            {% else %}
+              <div class="h1 site-header__logo{% if section.settings.logo == blank %}{% unless section.settings.left_aligned_logo == false and section.settings.nav_below_logo %} post-large--left{% endunless %}{% endif %}" itemscope itemtype="http://schema.org/Organization">
+            {% endif %}
+              {% if section.settings.logo != blank %}
+                <noscript>
+                  {% capture image_size %}{{ logo_width | escape }}x{% endcapture %}
+                  <div class="logo__image-wrapper">
+                    {{ section.settings.logo | img_url: image_size | img_tag: shop.name }}
+                  </div>
+                </noscript>
+                <div class="logo__image-wrapper supports-js">
+                  <a href="{{ routes.root_url }}" itemprop="url" style="padding-top:{{ 1 | divided_by: section.settings.logo.aspect_ratio | times: 100}}%;">
+                    {% assign img_url = section.settings.logo | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+                    <img class="logo__image lazyload"
+                         src="{{ section.settings.logo | img_url: '300x300' }}"
+                         data-src="{{ img_url }}"
+                         data-widths="[120, 180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 1944, 2048]"
+                         data-aspectratio="{{ section.settings.logo.aspect_ratio }}"
+                         data-sizes="auto"
+                         alt="{{ shop.name | escape }}"
+                         itemprop="logo">
+                  </a>
+                </div>
+              {% else %}
+                <a href="{{ routes.root_url }}" itemprop="url">{{ shop.name }}</a>
+              {% endif %}
+            {% if request.page_type == 'index' %}
+              </h1>
+            {% else %}
+              </div>
+            {% endif %}
+          </div>
+          <div class="grid__item post-large--two-thirds post-large--display-table-cell medium-down--hide">
+            {% include 'site-nav' with linklists[section.settings.nav_menu] %}
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+  </header>
 </div>
 
-{% if section.settings.header_search_enable %}
-  {% include 'search-modal' %}
-{% endif %}
 
 {% schema %}
-  {
-    "name": "Header",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Layout"
-      },
-      {
-        "type": "select",
-        "id": "header_style",
-        "label": "Desktop style",
-        "default": "button",
-        "options": [
-          {
-            "value": "button",
-            "label": "Sticky button"
-          },
-          {
-            "value": "bar",
-            "label": "Sticky bar"
-          },
-          {
-            "value": "top",
-            "label": "Top only"
-          }
-        ]
-      },
-      {
-        "type": "select",
-        "id": "main_menu_alignment",
-        "label": "Header layout",
-        "default": "right",
-        "options": [
-          {
-            "value": "right",
-            "label": "Logo left, menu right"
-          },
-          {
-            "value": "left-center",
-            "label": "Logo left, menu center"
-          },
-          {
-            "value": "center-left",
-            "label": "Logo center, menu left"
-          },
-          {
-            "value": "center-split",
-            "label": "Logo center, menu split"
-          },
-          {
-            "value": "center",
-            "label": "Logo center, menu below"
-          }
-        ]
-      },
-      {
-        "type": "checkbox",
-        "id": "sticky_index",
-        "label": "Overlay header over home page"
-      },
-      {
-        "type": "checkbox",
-        "id": "sticky_collection",
-        "label": "Overlay header over collection",
-        "info": "(if collection image is enabled)"
-      },
-      {
-        "type": "checkbox",
-        "id": "header_search_enable",
-        "label": "Enable search"
-      },
-      {
-        "type": "header",
-        "content": "Logo"
-      },
-      {
-        "type": "image_picker",
-        "id": "logo",
-        "label": "Logo"
-      },
-      {
-        "type": "image_picker",
-        "id": "logo-inverted",
-        "label": "White logo",
-        "info": "Used when on top of an image"
-      },
-      {
-        "type": "range",
-        "id": "desktop_logo_width",
-        "label": "Desktop logo width",
-        "default": 200,
-        "min": 80,
-        "max": 400,
-        "step": 10,
-        "unit": "px"
-      },
-      {
-        "type": "range",
-        "id": "mobile_logo_width",
-        "label": "Mobile logo width",
-        "default": 140,
-        "min": 50,
-        "max": 200,
-        "step": 10,
-        "unit": "px",
-        "info": "Set as a max-width, may appear smaller"
-      },
-      {
-        "type": "checkbox",
-        "id": "logo_hide_mobile",
-        "label": "Hide logo on mobile pages",
-        "default": true,
-        "info": "Maximizes screen space for your content. Add your logo under Animations to show your logo as the page loads instead. Logo always shows on home page."
-      },
-      {
-        "type": "header",
-        "content": "Navigation"
-      },
-      {
-        "type": "link_list",
-        "id": "main_menu_link_list",
-        "label": "Menu",
-        "default": "main-menu"
-      },
-
-      {
-        "type": "header",
-        "content": "Announcement bar"
-      },
-      {
-        "type": "checkbox",
-        "id": "show_announcement",
-        "label": "Show an announcement"
-      },
-      {
-        "type": "checkbox",
-        "id": "show_announcement_home_only",
-        "label": "Home page only"
-      },
-      {
-        "type": "text",
-        "id": "announcement_text",
-        "label": "Announcement text",
-        "default": "Free shipping and returns"
-      },
-      {
-        "type": "url",
-        "id": "announcement_link",
-        "label": "Announcement link"
+{
+  "name": {
+    "da": "Overskrift",
+    "de": "Titel",
+    "en": "Header",
+    "es": "Encabezado",
+    "fi": "Ylätunniste",
+    "fr": "En-tête",
+    "hi": "हैडर",
+    "it": "Header",
+    "ja": "ヘッダー",
+    "ko": "머리글",
+    "nb": "Header",
+    "nl": "Koptekst",
+    "pt-BR": "Cabeçalho",
+    "pt-PT": "Cabeçalho",
+    "sv": "Rubrik",
+    "th": "ส่วนหัว",
+    "zh-CN": "标头",
+    "zh-TW": "標頭"
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "header_search_enable",
+      "label": {
+        "da": "Vis søgelinje",
+        "de": "Suchleiste anzeigen",
+        "en": "Show search bar",
+        "es": "Mostrar barra de búsqueda",
+        "fi": "Näytä hakupalkki",
+        "fr": "Afficher la barre de recherche",
+        "hi": "सर्च बार दिखाएं",
+        "it": "Mostra barra di ricerca",
+        "ja": "検索バーを表示する",
+        "ko": "검색 바 표시",
+        "nb": "Vis søkefelt",
+        "nl": "Zoekbalk weergeven",
+        "pt-BR": "Exibir barra de pesquisa",
+        "pt-PT": "Mostrar barra de pesquisa",
+        "sv": "Visa sökfältet",
+        "th": "แสดงแถบการค้นหา",
+        "zh-CN": "显示搜索栏",
+        "zh-TW": "顯示搜尋列"
       }
-    ]
-  }
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": {
+        "da": "Logo",
+        "de": "Logo",
+        "en": "Logo",
+        "es": "Logotipo",
+        "fi": "Logo",
+        "fr": "Logo",
+        "hi": "लोगो",
+        "it": "Logo",
+        "ja": "ロゴ",
+        "ko": "로고",
+        "nb": "Logo",
+        "nl": "Logo",
+        "pt-BR": "Logotipo",
+        "pt-PT": "Logótipo",
+        "sv": "Logotyp",
+        "th": "โลโก้",
+        "zh-CN": "logo",
+        "zh-TW": "商標"
+      },
+      "info": {
+        "da": "450 x 200 pixel anbefales",
+        "de": "450 x 200 Pixel empfohlen",
+        "en": "450 x 200px recommended",
+        "es": "450 x 200px recomendado",
+        "fi": "Suositus 450 x 200px",
+        "fr": "450 x 200 px recommandé",
+        "hi": "450 x 200px की अनुशंसा की जाती है",
+        "it": "450 x 200 px consigliato",
+        "ja": "450 x 200ピクセルを推奨",
+        "ko": "450x200 픽셀 권장",
+        "nb": "450 x 200 px anbefales",
+        "nl": "450 x 200 px aanbevolen",
+        "pt-BR": "450 x 200 px recomendado",
+        "pt-PT": "450 x 200 píxeis (recomendado)",
+        "sv": "450 x 200px rekommenderas",
+        "th": "แนะนำขนาด 450 x 200 พิกเซล",
+        "zh-CN": "推荐使用 450 x 200 像素大小",
+        "zh-TW": "建議使用 450 x 200px"
+      }
+    },
+    {
+      "type": "text",
+      "id": "logo_max_width",
+      "label": {
+        "da": "Tilpasset logobredde (i pixels)",
+        "de": "Benutzerdefinierte Logobreite (Pixel)",
+        "en": "Custom logo width (in pixels)",
+        "es": "Ancho del logotipo personalizado (en píxeles)",
+        "fi": "Mukautettu logon leveys (pikseleinä)",
+        "fr": "Largeur personnalisée du logo (en pixels)",
+        "hi": "कस्टम लोगो की चौड़ाई (पिक्सेल)",
+        "it": "Larghezza logo personalizzato (in pixel)",
+        "ja": "ロゴの幅をカスタマイズする (ピクセル単位)",
+        "ko": "사용자 지정 로고 폭 (픽셀)",
+        "nb": "Tilpasset logobredde (i piksler)",
+        "nl": "Aangepaste logobreedte (in pixels)",
+        "pt-BR": "Largura do logotipo personalizado (em pixels)",
+        "pt-PT": "Largura de logótipo personalizada (em píxeis)",
+        "sv": "Anpassad logotypbredd (i pixlar)",
+        "th": "ความกว้างของโลโก้แบบกำหนดเอง (เป็นพิกเซล)",
+        "zh-CN": "自定义 logo 宽度（像素）",
+        "zh-TW": "自訂標誌寬度 (單位為像素)"
+      },
+      "default": {
+        "da": "450",
+        "de": "450",
+        "en": "450",
+        "es": "450",
+        "fi": "450",
+        "fr": "450",
+        "hi": "450",
+        "it": "450",
+        "ja": "450",
+        "ko": "450",
+        "nb": "450",
+        "nl": "450",
+        "pt-BR": "450",
+        "pt-PT": "450",
+        "sv": "450",
+        "th": "450",
+        "zh-CN": "450",
+        "zh-TW": "450"
+      }
+    },
+    {
+      "type": "header",
+      "content": {
+        "da": "Hovedmenu",
+        "de": "Hauptmenü",
+        "en": "Main menu",
+        "es": "Menú principal",
+        "fi": "Päävalikko",
+        "fr": "Menu principal",
+        "hi": "मुख्य मेनू",
+        "it": "Menu principale",
+        "ja": "メインメニュー",
+        "ko": "주 메뉴",
+        "nb": "Hovedmeny",
+        "nl": "Hoofdmenu",
+        "pt-BR": "Menu principal",
+        "pt-PT": "Menu principal",
+        "sv": "Huvudmeny",
+        "th": "เมนูหลัก",
+        "zh-CN": "主菜单",
+        "zh-TW": "主選單"
+      }
+    },
+    {
+      "type": "link_list",
+      "id": "nav_menu",
+      "label": {
+        "da": "Menu",
+        "de": "Menü",
+        "en": "Menu",
+        "es": "Menú",
+        "fi": "Valikko",
+        "fr": "Menu",
+        "hi": "मेनू",
+        "it": "Menu",
+        "ja": "メニュー",
+        "ko": "메뉴",
+        "nb": "Meny",
+        "nl": "Menu",
+        "pt-BR": "Menu",
+        "pt-PT": "Menu",
+        "sv": "Meny",
+        "th": "เมนู",
+        "zh-CN": "菜单",
+        "zh-TW": "選單"
+      },
+      "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "nav_below_logo",
+      "label": {
+        "da": "Centrer hovedmenuen under logoet",
+        "de": "Hauptmenü unter Logo zentrieren",
+        "en": "Center main menu below logo",
+        "es": "Centrar el menú principal debajo del logotipo",
+        "fi": "Keskitä päävalikko logon alle",
+        "fr": "Centrer le menu principal sous le logo",
+        "hi": "लोगो के नीचे केंद्र मुख्य मेनू",
+        "it": "Centra menu principale sotto il logo",
+        "ja": "ロゴの下のメインメニューを中央寄せする",
+        "ko": "로고 아래 중앙 주요 메뉴",
+        "nb": "Sentrer hovedmeny under logo",
+        "nl": "Centreer hoofdmenu onder logo",
+        "pt-BR": "Centralizar menu principal abaixo do logotipo",
+        "pt-PT": "Centrar menu principal abaixo do logótipo",
+        "sv": "Centrera huvudmeny under logotypen",
+        "th": "จัดเมนูหลักใต้โลโก้ให้อยู่ตรงกลาง",
+        "zh-CN": "在 logo 下方居中显示主菜单",
+        "zh-TW": "將主選單置中並置於商標下方"
+      }
+    },
+    {
+      "type": "checkbox",
+      "id": "left_aligned_logo",
+      "label": {
+        "da": "Venstrejuster logo",
+        "de": "Logo linksbündig ausrichten",
+        "en": "Left-align logo",
+        "es": "Alinear el logotipo a la izquierda",
+        "fi": "Tasaa logo vasemmalle",
+        "fr": "Aligner le logo à gauche",
+        "hi": "बाईं ओर पंक्तिबद्ध लोगो",
+        "it": "Allinea logo a sinistra",
+        "ja": "ロゴを左寄せする",
+        "ko": "왼쪽 맞춤 로고",
+        "nb": "Venstrejuster logo",
+        "nl": "Logo links uitlijnen",
+        "pt-BR": "Alinhar logotipo à esquerda",
+        "pt-PT": "Alinhar logótipo à esquerda",
+        "sv": "Vänsterjustera logotypen",
+        "th": "จัดโลโก้ชิดซ้าย",
+        "zh-CN": "左对齐 logo",
+        "zh-TW": "將商標靠左對齊"
+      }
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header_lines",
+      "label": {
+        "da": "Vis skillelinjer i sidehoved",
+        "de": "Trennlinien in Header anzeigen",
+        "en": "Show divider lines in header",
+        "es": "Mostrar líneas divisorias en el encabezado",
+        "fi": "Näytä väliviivat otsikossa",
+        "fr": "Afficher les lignes de séparation dans l'en-tête",
+        "hi": "हैडर में डिवाइडर लाइन दिखाएं",
+        "it": "Mostra linee divisorie nell'header",
+        "ja": "ヘッダーに分割線を表示する",
+        "ko": "제목에 구분선 표시",
+        "nb": "Vis skillelinjer i topptekst",
+        "nl": "Toon scheidingslijnen in koptekst",
+        "pt-BR": "Exibir linhas divisórias no cabeçalho",
+        "pt-PT": "Mostrar linhas divisórias no cabeçalho",
+        "sv": "Visa delningslinjer i rubriken",
+        "th": "แสดงเส้นแบ่งในส่วนหัว",
+        "zh-CN": "在标头中显示分割线",
+        "zh-TW": "在標頭中顯示分隔線"
+      }
+    },
+    {
+      "type": "header",
+      "content": {
+        "da": "Meddelelseslinje",
+        "de": "Ankündigungsbereich",
+        "en": "Announcement bar",
+        "es": "Barra de anuncios",
+        "fi": "Ilmoituspalkki",
+        "fr": "Barre d'annonces",
+        "hi": "घोषणा बार",
+        "it": "Barra degli annunci",
+        "ja": "告知バー",
+        "ko": "공지 표시줄",
+        "nb": "Kunngjøringslinje",
+        "nl": "Aankondigingsbalk",
+        "pt-BR": "Barra de avisos",
+        "pt-PT": "Barra de comunicado",
+        "sv": "Meddelandefält",
+        "th": "แถบประกาศ",
+        "zh-CN": "公告栏",
+        "zh-TW": "公告列"
+      }
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": {
+        "da": "Vis meddelelse",
+        "de": "Ankündigung anzeigen",
+        "en": "Show announcement",
+        "es": "Mostrar anuncio",
+        "fi": "Näytä ilmoitus",
+        "fr": "Afficher l'annonce",
+        "hi": "घोषणा डिखाएं",
+        "it": "Mostra annuncio",
+        "ja": "告知を表示する",
+        "ko": "공지 표시",
+        "nb": "Vis kunngjøring",
+        "nl": "Aankondiging weergeven",
+        "pt-BR": "Exibir anúncio",
+        "pt-PT": "Mostrar comunicado",
+        "sv": "Visa tillkännagivande",
+        "th": "แสดงประกาศ",
+        "zh-CN": "显示公告",
+        "zh-TW": "顯示公告"
+      },
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "header_text",
+      "label": {
+        "da": "Tekst",
+        "de": "Text",
+        "en": "Text",
+        "es": "Texto",
+        "fi": "Teksti",
+        "fr": "Texte",
+        "hi": "टेक्स्ट",
+        "it": "Testo",
+        "ja": "テキスト",
+        "ko": "텍스트",
+        "nb": "Tekst",
+        "nl": "Tekst",
+        "pt-BR": "Texto",
+        "pt-PT": "Texto",
+        "sv": "Text",
+        "th": "ข้อความ",
+        "zh-CN": "文本",
+        "zh-TW": "文字"
+      },
+      "default": {
+        "da": "Meddel noget her",
+        "de": "Hier etwas ankündigen",
+        "en": "Announce something here",
+        "es": "Anuncia algo aquí",
+        "fi": "Ilmoita jotakin tässä",
+        "fr": "Annoncez quelque chose ici",
+        "hi": "यहां कुछ घोषित करें",
+        "it": "Annuncia qualcosa qui",
+        "ja": "ここで告知してください",
+        "ko": "여기에 공지하십시오",
+        "nb": "Kunngjør noe her",
+        "nl": "Kondig hier iets aan",
+        "pt-BR": "Anuncie algo aqui",
+        "pt-PT": "Anunciar algo aqui",
+        "sv": "Meddela något här",
+        "th": "ประกาศข้อความที่นี่",
+        "zh-CN": "在此处进行公告",
+        "zh-TW": "在此公告資訊"
+      }
+    },
+    {
+      "type": "url",
+      "id": "announcement_link",
+      "label": {
+        "da": "Link",
+        "de": "Link",
+        "en": "Link",
+        "es": "Enlace",
+        "fi": "Linkki",
+        "fr": "Lien",
+        "hi": "लिंक",
+        "it": "Link",
+        "ja": "リンク",
+        "ko": "링크",
+        "nb": "Kobling",
+        "nl": "Link",
+        "pt-BR": "Link",
+        "pt-PT": "Ligação",
+        "sv": "Länk",
+        "th": "ลิงก์",
+        "zh-CN": "链接",
+        "zh-TW": "連結"
+      },
+      "info": {
+        "da": "Valgfri",
+        "de": "Optional",
+        "en": "Optional",
+        "es": "Opcional",
+        "fi": "Valinnainen",
+        "fr": "Facultatif",
+        "hi": "वैकल्पिक",
+        "it": "Facoltativo",
+        "ja": "オプション",
+        "ko": "선택 사항",
+        "nb": "Valgfritt",
+        "nl": "Optioneel",
+        "pt-BR": "Opcional",
+        "pt-PT": "Opcional",
+        "sv": "Valfritt",
+        "th": "ไม่จำเป็น",
+        "zh-CN": "可选",
+        "zh-TW": "(選填)"
+      }
+    }
+  ]
+}
 {% endschema %}

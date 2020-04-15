@@ -1,233 +1,99 @@
-{% comment %}
-  It's best to load images as JPG instead of PNG for faster
-  loading, so that is our default. If you upload
-  PNG files and want to keep them that way, set the line
-  below to false.
-{% endcomment %}
-{%- assign force_jpg = true -%}
-
-{% unless grid_item_width %}
-  {%- assign grid_item_width = 'medium-up--one-quarter small--one-half' -%}
+{% unless current_collection == blank %}
+  {% assign current_collection = collection %}
 {% endunless %}
 
 {% assign on_sale = false %}
-{% if product.compare_at_price > product.price %}
-  {%- assign on_sale = true -%}
+{% assign sale_text = 'products.product.sale' | t %}
+{% if featured.compare_at_price > featured.price %}
+  {% assign on_sale = true %}
 {% endif %}
 
-{%- assign sold_out = true -%}
-{% if product.available %}
-  {%- assign sold_out = false -%}
+{% assign sold_out = true %}
+{% assign sold_out_text = 'products.product.sold_out' | t %}
+{% if featured.available %}
+  {% assign sold_out = false %}
 {% endif %}
 
-{%- assign product_tags = product.tags | join: ',' -%}
-{%- assign has_custom_label = false -%}
-{% if product_tags contains '_label_' %}
-  {% for tag in product.tags %}
-    {% if tag contains '_label_' %}
-      {%- assign tag_starts_with = tag | slice: 0 -%}
-      {% if tag_starts_with == '_' %}
-        {%- assign has_custom_label = true -%}
-        {%- assign custom_label = tag | replace: '_label_', '' -%}
-      {% endif %}
-    {% endif %}
-  {% endfor %}
+{% if featured.title == '' %}
+  {% comment %}add default state for product block in storefront editor{% endcomment %}
+  {% capture product_title %}{{ 'home_page.onboarding.product_title' | t }}{% endcapture %}
+{% else %}
+  {% capture product_title %}{{ featured.title | escape }}{% endcapture %}
 {% endif %}
 
-<div
-  class="grid__item grid-product {{ grid_item_width }}{% if settings.quick_shop_enable and sold_out == false %} grid-product__has-quick-shop{% endif %}{% if settings.product_hover_details %} grid-product__hover-details{% endif %}"
-  data-aos
-  data-product-grid
-  data-id="{{ product.id }}">
-  <div class="grid-product__content">
-    {% if has_custom_label %}
-      <div class="grid-product__tag grid-product__tag--custom">
-        {{ custom_label }}
-      </div>
-    {% else %}
-      {% if sold_out %}
-        <div class="grid-product__tag grid-product__tag--sold-out">
-          {{ 'products.product.sold_out' | t }}
-        </div>
+<div class="{% if sold_out %} sold-out{% endif %}{% if on_sale %} on-sale{% endif %}">
+  <a href="{{ featured.url | within: collection }}" class="grid-link{% if section.settings.center_grid_link %} text-center{% endif %}">
+    <span class="grid-link__image grid-link__image--loading{% if section.settings.show_sold_out_circle %} grid-link__image-sold-out{% endif %} grid-link__image--product" data-image-wrapper>
+      {% if on_sale and section.settings.show_sale_circle %}
+        <span class="badge badge--sale">
+          <span class="badge__text{% if sale_text.size > 7 %} badge__text--small{% endif %}">{{ 'products.product.sale' | t }}</span>
+        </span>
       {% endif %}
-      {% if on_sale and sold_out == false %}
-        <div class="grid-product__tag grid-product__tag--sale">
-          {% if settings.product_save_amount %}
-            {% if settings.product_save_type == 'dollar' %}
-              {% capture saved_amount %}{{ product.compare_at_price | minus: product.price | money }}{% endcapture %}
-            {% else %}
-              {% capture saved_amount %}{{ product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round }}%{% endcapture %}
-            {% endif %}
-            {{ 'products.general.save_html' | t: saved_amount: saved_amount }}
-          {% else %}
-            {{ 'products.general.sale' | t }}
-          {% endif %}
-        </div>
+      {% if sold_out and section.settings.show_sold_out_circle %}
+        <span class="badge badge--sold-out">
+          <span class="badge__text{% if sold_out_text.size > 9 %} badge__text--small{% endif %}">{{ 'products.product.sold_out' | t }}</span>
+        </span>
       {% endif %}
-    {% endif %}
+      <span class="grid-link__image-centered">
+        {% if featured.title != '' %}
+          {% unless featured.featured_image == blank %}
+            {% capture img_id %}ProductImage-{{ featured.featured_image.id }}{% endcapture %}
+            {% capture wrapper_id %}ProductImageWrapper-{{ featured.featured_image.id }}{% endcapture %}
+            {%- assign img_url = featured.featured_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
 
-    {%- assign fixed_aspect_ratio = false -%}
-    {% unless settings.product_grid_image_size == 'natural' %}
-      {%- assign fixed_aspect_ratio = true -%}
-    {% endunless %}
-
-    {%- assign image_limit = 1 -%}
-    {%- assign image_count = 0 -%}
-    {% if settings.product_hover_image %}
-      {%- assign image_limit = 10 -%}
-    {% endif %}
-
-    {%- assign slider_image_padding = '100%' -%}
-
-    <a
-      href="{{ product.url | within: collection }}"
-      class="grid-product__link{% if sold_out %} grid-product__link--disabled{% endif %}{% if settings.quick_shop_enable %} quick-product__btn js-screen-open-product-{{ product.id }} js-no-transition{% endif %}"
-      data-product-id="{{ product.id }}"
-      data-url="{{ product.url | within: collection }}">
-      <div class="product-slider"
-        data-image-count="{{ product.images | size }}"
-        data-id="{{ product.id }}">
-        {% for image in product.images limit: image_limit %}
-          {%- assign image_count = image_count | plus: 1 -%}
-          <div class="product-slide">
-            <div class="image-wrap">
-              {% if forloop.first %}
-                {% if fixed_aspect_ratio %}
-                  <div
-                    class="grid__image-ratio grid__image-ratio--{{ settings.product_grid_image_size }} lazyload"
-                    data-bgset="{% include 'bgset', image: image %}"
-                    data-sizes="auto">
-                  </div>
-                {% else %}
-                  {%- assign slider_image_padding = 100 | divided_by: image.aspect_ratio | append: '%' -%}
-                  <div class="image-wrap"
-                    style="height: 0; padding-bottom: {{ slider_image_padding }};"
-                    >
-                    {%- if force_jpg -%}
-                      {%- assign img_url = image | img_url: '1x1', format: 'jpg' | replace: '_1x1.', '_{width}x.' -%}
-                    {%- else -%}
-                      {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
-                    {%- endif -%}
-                    <img class="grid-product__image lazyload"
-                        data-src="{{ img_url }}"
-                        data-widths="[750, 900, 1080]"
-                        data-aspectratio="{{ image.aspect_ratio }}"
-                        data-sizes="auto"
-                        alt="{{ image.alt | escape }}">
-                    <noscript>
-                      <img class="grid-product__image lazyloaded"
-                        src="{{ image | img_url: '400x' }}"
-                        alt="{{ image.alt | escape }}">
-                    </noscript>
-                  </div>
-                {% endif %}
-              {% else %}
-                <div
-                  class="grid__image-ratio grid__image-ratio--{{ settings.product_grid_image_size }} lazyload"
-                  {% if settings.product_grid_image_size == 'natural' %}
-                    style="padding-bottom: {{ slider_image_padding }}"
-                  {% endif %}
-                  data-bgset="{% include 'bgset', image: image %}"
-                  data-sizes="auto">
-                </div>
-              {% endif %}
+            {% include 'image-style' with image: featured.featured_image, width: product_width, height: 480, wrapper_id: wrapper_id, img_id: img_id %}
+            <div id="{{ wrapper_id }}" class="product__img-wrapper supports-js">
+              <div style="padding-top:{{ 1 | divided_by: featured.featured_image.aspect_ratio | times: 100}}%;">
+                <img id="{{ img_id }}"
+                     alt="{{ featured.featured_image.alt | escape }}"
+                     class="product__img lazyload"
+                     data-src="{{ img_url }}"
+                     data-widths="[150, 220, 360, 470, 600, 750, 940, 1080, 1296, 1512, 1728, 2048]"
+                     data-aspectratio="{{ featured.featured_image.aspect_ratio }}"
+                     data-sizes="auto"
+                     data-image>
+              </div>
             </div>
-          </div>
-        {% endfor %}
-      </div>
-
-      {% if image_count > 1 %}
-        {%- assign loader_duration = 1350 | times: image_count -%}
-        <style>
-          .product-slider.slick-initialized[data-id="{{ product.id }}"]:after {
-            animation-duration: {{ loader_duration }}ms;
-          }
-        </style>
-      {% endif %}
-
-      <div class="grid-product__meta">
-        <div class="grid-product__title">{{ product.title }}</div>
-        {% if settings.vendor_enable %}
-          <div class="grid-product__vendor">{{ product.vendor }}</div>
+          {% else %}
+            <img src="{{ featured.featured_image.src | img_url: 'large' }}" alt="{{ featured.featured_image.alt | escape }}" class="product__img" data-image>
+          {% endunless %}
+          <noscript>
+            <img src="{{ featured.featured_image.src | img_url: 'large' }}" alt="{{ featured.featured_image.alt | escape }}" class="product__img">
+          </noscript>
+        {% else %}
+          {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+          {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
         {% endif %}
-        <div class="grid-product__price">
+      </span>
+    </span>
+    <p class="grid-link__title">{{ product_title }}</p>
+    {% if section.settings.vendor_enable %}
+      <p class="grid-link__title grid-link__vendor">{{ featured.vendor }}</p>
+    {% endif %}
+    {% if featured.title != '' %}
+      <p class="grid-link__meta">
+        {%- assign price = featured.price | money -%}
+
+        {% if on_sale %}
+        <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+        <s class="grid-link__sale_price">{{ featured.compare_at_price | money }}</s>
+        {% endif %}
+        {% if featured.price_varies %}
+          {{ 'products.general.from_html' | t: price: price }}
+        {% else %}
           {% if on_sale %}
-            <span class="visually-hidden">{{ 'products.general.regular_price' | t }}</span>
-            <del class="grid-product__price--original">{{ product.compare_at_price | money }}</del>
-            <span class="visually-hidden">{{ 'products.general.sale_price' | t }}</span>
-          {% endif %}
-          {% if product.price_varies %}
-            {% assign price = product.price_min | money %}
-            {{ 'products.general.from_text_html' | t: price: price }}
+            <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
           {% else %}
-            {{ product.price  | money }}
+            <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
           {% endif %}
-        </div>
+          {{ price }}
 
-        {%- assign product_variant = product.selected_or_first_available_variant -%}
-        {%- if product_variant.unit_price_measurement -%}
-          <div class="product__unit-price">
-            {%- capture unit_price_base_unit -%}
-              {%- if product_variant.unit_price_measurement -%}
-                {%- if product_variant.unit_price_measurement.reference_value != 1 -%}
-                  {{ product_variant.unit_price_measurement.reference_value }}
-                {%- endif -%}
-                {{ product_variant.unit_price_measurement.reference_unit }}
-              {%- endif -%}
-            {%- endcapture -%}
-
-            {{ product_variant.unit_price | money }}/{{ unit_price_base_unit }}
-          </div>
-        {%- endif -%}
-
-        {% if settings.enable_product_reviews and settings.enable_product_reviews_collection %}
-          <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+          {%- assign variant = featured.selected_or_first_available_variant -%}
+          {%- if variant.available and variant.unit_price_measurement -%}
+            {% include 'product-unit-price', variant: variant, wrapper_class: 'grid-link__unit-price' %}
+          {%- endif -%}
         {% endif %}
-      </div>
-
-      {% if settings.collection_color_swatches %}
-        {%- assign swatch_file_extension = 'png' -%}
-
-        {% for option in product.options_with_values %}
-          {%- assign option_name = option.name | downcase -%}
-          {% if option_name contains 'color' or option_name contains 'colour' %}
-            {%- assign option_index = forloop.index0 -%}
-            {%- assign values = '' -%}
-            <div class="grid-product__colors">
-              {% for variant in product.variants %}
-                {%- assign value = variant.options[option_index] %}
-                {% unless values contains value %}
-                  {%- assign values = values | join: ',' %}
-                  {%- assign values = values | append: ',' | append: value %}
-                  {%- assign values = values | split: ',' %}
-
-                  {%- assign color_image = value | handle | append: '.' | append: swatch_file_extension | asset_img_url: '50x' | prepend: 'https:' | split: '?' | first -%}
-                  {%- assign color_swatch_fallback = value | split: ' ' | last | handle -%}
-
-                  <span
-                    class="color-swatch color-swatch--small"
-                    style="background-image: url({{ color_image }}); background-color: {{ color_swatch_fallback }};">
-                  </span>
-                {% endunless %}
-               {% endfor %}
-            </div>
-          {% endif %}
-        {% endfor %}
-      {% endif %}
-    </a>
-  </div>
-
-  {% comment %}
-    Do not output the quick shop modal if we're loading related products
-    through another quick shop modal. Determined by checking the product.ajax template suffix.
-    These are loaded for product.sections templates but quickly removed
-    in JS before appending the related section.
-  {% endcomment %}
-  {%- unless template.suffix == 'ajax' -%}
-    {% if settings.quick_shop_enable %}
-      {%- unless no_modal -%}
-        {% include 'quick-shop-modal' %}
-      {%- endunless -%}
+      </p>
     {% endif %}
-  {%- endunless -%}
+  </a>
 </div>
