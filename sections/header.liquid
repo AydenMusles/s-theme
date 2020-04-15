@@ -174,7 +174,7 @@
                   </div>
                 </noscript>
                 <div class="logo__image-wrapper supports-js">
-                  <a href="{{ routes.root_url }}" itemprop="url" style="padding-top:{{ 1 | divided_by: section.settings.logo.aspect_ratio | times: 100}}%;">
+                  <a href="/pages/store" itemprop="url" style="padding-top:{{ 1 | divided_by: section.settings.logo.aspect_ratio | times: 100}}%;">
                     {% assign img_url = section.settings.logo | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
                     <img class="logo__image lazyload"
                          src="{{ section.settings.logo | img_url: '300x300' }}"
@@ -187,7 +187,7 @@
                   </a>
                 </div>
               {% else %}
-                <a href="{{ routes.root_url }}" itemprop="url">{{ shop.name }}</a>
+                <a href="/pages/store" itemprop="url">{{ shop.name }}</a>
               {% endif %}
             {% if request.page_type == 'index' %}
               </h1>
@@ -217,7 +217,7 @@
                   </div>
                 </noscript>
                 <div class="logo__image-wrapper supports-js">
-                  <a href="{{ routes.root_url }}" itemprop="url" style="padding-top:{{ 1 | divided_by: section.settings.logo.aspect_ratio | times: 100}}%;">
+                  <a href="/pages/store" itemprop="url" style="padding-top:{{ 1 | divided_by: section.settings.logo.aspect_ratio | times: 100}}%;">
                     {% assign img_url = section.settings.logo | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
                     <img class="logo__image lazyload"
                          src="{{ section.settings.logo | img_url: '300x300' }}"
@@ -230,7 +230,7 @@
                   </a>
                 </div>
               {% else %}
-                <a href="{{ routes.root_url }}" itemprop="url">{{ shop.name }}</a>
+                <a href="/pages/store" itemprop="url">{{ shop.name }}</a>
               {% endif %}
             {% if request.page_type == 'index' %}
               </h1>

@@ -168,10 +168,28 @@
           "show_sale_circle": false,
           "center_grid_link": false
         }
+      },
+      "1586963753075": {
+        "type": "gallery",
+        "blocks": {
+          "1586963753075-2": {
+            "type": "image",
+            "settings": {
+              "image": "shopify:\/\/shop_images\/858A64DA-F1EE-4570-A0EC-1204067DFCCA.png",
+              "link": ""
+            }
+          }
+        },
+        "block_order": [
+          "1586963753075-2"
+        ],
+        "settings": {
+        }
       }
     },
     "content_for_index": [
       "1586395023948",
+      "1586963753075",
       "1586910090286"
     ]
   },
