@@ -268,7 +268,7 @@ $colorTopBarText: {{ settings.color_topbar_text }};
 $colorBody: {{ settings.color_body_bg }};
 $colorHeader: transparent;
 $colorTopBar: {{ settings.color_topbar_bg }};
-$passwordBgImage: '{{ 'password-page-background.jpg' | asset_url }}';
+$passwordBg: #000000;
 
 // Border colors
 $colorBorder: {{ settings.color_borders }};
@@ -2675,7 +2675,7 @@ $shareBorderColor: #ececec;
   width: 100%;
 
   @if $passwordPageUseBgImage {
-    background-image: url($passwordBgImage);
+    background-color: #000000;
     background-size: cover;
     background-repeat: no-repeat;
     color: #ffffff;
