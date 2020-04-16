@@ -1,0 +1,41 @@
+<footer id="footer-content" class="footer">
+  <div class="container">
+    {% if has_footer %}      
+    {% assign cols = '' %}
+    {% for i in (i..3) %}
+    {% assign c = i | plus: 1 %}
+    {% assign col = 'column-' | append: c %}
+    {% assign col_blog = col | append: '-blog' %}
+    {% assign col_menu = col | append: '-menu' %}
+    {% assign col_text = col | append: '-text' %}
+
+    {% if settings[col_blog] != blank or settings[col_menu] != blank or settings[col_text] != blank or settings.newsletter-signup-placement contains col or settings.social-footer-column-1 or settings.social-footer-column-2 or settings.social-footer-column-3 or settings.social-footer-column-4 %}
+    {% assign cols = cols | append: col | append: '|' %}
+    {% endif %}
+    {% endfor %}
+    {% assign footer_columns = cols | split: '|' %}
+
+    <div class="row">
+      {% for footer_column in footer_columns %}
+      {% include 'footer-column-loop' %}
+      {% endfor %}
+    </div>
+    {% endif %}
+  <div id="footer-social-links">
+    {% include 'social-links' with 'lg' %}
+    </div>
+  <p class="text-center footer-credits">
+      <a href="/pages/help" title="Help">Help</a> |
+    
+      <a href="/pages/privacy-policy" title="Privacy Policy">Privacy Policy</a> |
+    
+      <a href="/pages/terms-conditions" title="Terms & Conditions">Terms & Conditions</a> |
+      <small>
+        &copy;{{ 'now' | date: '%Y' }}&nbsp;<a href="/" title="{{ shop.name }} {% include '__localize' with 'homepage' %}">{{ settings.shop-name }}</a>. <br class="visible-sm">
+        Powered&nbsp;by&nbsp;<a href="/influify" target="_blank">Influify</a>.
+      </small>
+    </p>	
+  </div>
+
+  {% if has_footer_navbar %}{% include 'navbar' with 'footer' %}{% endif %}
+</footer>

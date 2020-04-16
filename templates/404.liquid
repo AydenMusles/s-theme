@@ -1,13 +1,7 @@
-{% layout 'theme.homepage' %}
-<div class="page-width">
-  <center>
-<h2>404 | Error</h2>
-<p>Page can't be found.</p>
-<a href="/pages/store"><button class="enter">Enter Store</button></a>
-</center>
-</div>
+<section id="404" class="section-wrap">
+	{% include '__containers-open' %}
+	<h1 class="page-header">{{ page_title }}</h1>
 
-
-
-
-</div>
+	<p class="lead">{% include '__localize' with 'Apologies! The page could not be found.' %}</p>
+	{% include '__containers-close' %}
+</section>

@@ -1,0 +1,54 @@
+<!-- Add content to the popup -->
+<div id="my_popup" style="display: none;">
+
+  <p>Thank you for shopping in Failure's Online Store.  Please allow an additional 3-5 business days for processing and shipping as we are currently transitioning to a new warehouse to better serve you.
+    <br>If you have any immediate concerns, please email <strong>orders@themerchcollective.com</strong> and reference your order number in the subject line.</p>
+
+  <!-- Add an optional button to close the popup -->
+  <button class="my_popup_close">I Understand</button>
+
+</div>
+
+<style> 
+  .template-cart #my_popup {
+      background-color: #fff;
+      padding: 2rem;
+      text-align: center !important;
+      margin: 5%;
+  }
+
+  .template-cart #my_popup p {
+      margin-bottom: 1%;
+   	  color: #000;
+  }
+
+  .template-cart #my_popup button {
+      border: none;
+      padding: 1rem 2rem;
+      background-color: #1FC11F;
+      color: #FFF;
+      font-size: 1.5rem;
+  }
+
+  .template-cart #my_popup button:hover {
+      opacity: .8;  
+  }  
+</style>
+
+<script>
+  $(document).ready(function() {
+
+      // Initialize the plugin
+      $('#my_popup').popup();
+
+      var $checkout_button = $('.template-cart input.btn.btn-primary.btn-main');     
+    	
+      // Remove open popup class and auto click checkout
+      $('.my_popup_close').on('click', function() {        	
+          $checkout_button.removeClass('my_popup_open');
+          $checkout_button.click();
+      });
+
+
+  });
+</script>

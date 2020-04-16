@@ -1,0 +1,73 @@
+$('document').ready(function(){
+	if(typeof SCP_S != 'undefined' ) {
+		if(SCP_S.showNotice) {
+			showNotice(SCP_S.message);
+		}
+	} else {
+		showNotice();
+	}
+});
+
+function showNotice(message = false) {
+	if(!message) {
+		var bannerText = "<span style='color:red'>PLEASE NOTE:</span> Influify Merch sales have been suspended due to COVID-19. <a href='http://www.secondcityprints.com/covid' target='_blank'>Our Response.</a>";
+	} else {
+		var bannerText = message;
+	}
+	
+	var noticeStyle = 
+	'<style>' +
+		'#scp-notice {' +
+			'position: fixed;' +
+			'top: 0;' +
+			'left: 0;' +
+			'width: 100vw;' +
+			'padding: 15px 35px;' +
+			'text-align: center;' +
+			'color: black;' +
+			'background: rgb(255, 255, 255, 0.95);' +
+			'font-family: sans-serif;' +
+			'font-size: calc(0.8rem + 0.5vw);' +
+			'border-bottom: 2px solid black;' +
+			'transition: opacity 1s ease-in-out;' +
+			'z-index: 1000' +
+		'}' +
+		'#scp-notice a {' +
+			'color: cornflowerblue;' +
+			'text-decoration: underline;' +
+		'}' +
+		'#scp-close {' +
+			'position: absolute;'+
+			'display: flex;' +
+			'align-items: center;' +
+			'justify-content: center;' +
+			'top: 0px;'+
+			'left: 0px;'+
+			'height: 40px;' +
+			'width: 40px;' +
+			'color: white;'+
+			'background: black;'+
+			'border-bottom-right-radius: 10px;'+
+			'cursor: pointer;'+
+			'z-index: 1001' +
+		'}' +
+	'</style>';
+	
+	var notice = 
+	'<div id="scp-notice">' + 
+		bannerText + 
+		'<span id="scp-close">X</span>' +
+	'</div>';
+	
+	$( noticeStyle ).appendTo( "head" );
+	$( notice ).appendTo( "body" );
+	
+	$('#scp-close').on('click', function(){
+		$('#scp-notice').css('display', 'none');
+	});	
+	
+	setTimeout(function(){ 
+		$('#scp-notice').css('opacity', '0'); 
+		setTimeout(function(){ $('#scp-notice').css('display', 'none'); }, 2000);
+	}, 15000);
+}

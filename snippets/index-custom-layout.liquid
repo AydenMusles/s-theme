@@ -1,0 +1,46 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-3">
+      {% if settings.custom-product-left != blank and settings.custom-product-left-url != blank %}
+      <a href="{{ settings.custom-product-left-url }}">
+        <img src="{{ 'custom-product-left.png' | asset_url }}" alt="" class="img-responsive custom-block-img hidden-xs" />
+        <img src="{{ 'custom-product-left-mobile.png' | asset_url }}" alt="" class="img-responsive custom-block-img visible-xs" />
+      </a>
+      {% endif %}
+    </div>
+    <div class="col-sm-6">
+      {% if settings.custom-product-center != blank and settings.custom-product-center-url != blank %}
+      <a href="{{ settings.custom-product-center-url }}">
+        <img src="{{ 'custom-product-center.png' | asset_url }}" alt="" class="img-responsive custom-block-img hidden-xs" />
+        <img src="{{ 'custom-product-center-mobile.png' | asset_url }}" alt="" class="img-responsive custom-block-img visible-xs" />
+      </a>
+      {% endif %}
+    </div>
+    <div class="col-sm-3">
+      {% if settings.custom-product-right != blank and settings.custom-product-right-url != blank %}
+      <a href="{{ settings.custom-product-right-url }}">
+        <img src="{{ 'custom-product-right.png' | asset_url }}" alt="" class="img-responsive custom-block-img hidden-xs" />
+        <img src="{{ 'custom-product-right-mobile.png' | asset_url }}" alt="" class="img-responsive custom-block-img visible-xs" />
+      </a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">
+      {% if settings.custom-banner-left != blank and settings.custom-banner-left-url != blank %}
+      <a href="{{ settings.custom-banner-left-url }}">
+        <img src="{{ 'custom-banner-left.png' | asset_url }}" alt="" class="img-responsive custom-block-img hidden-xs" />
+        <img src="{{ 'custom-banner-left-mobile.png' | asset_url }}" alt="" class="img-responsive custom-block-img visible-xs" />
+      </a>
+      {% endif %}
+    </div>
+    <div class="col-sm-6">
+      {% if settings.custom-banner-right != blank and settings.custom-banner-right-url != blank %}
+      <a href="{{ settings.custom-banner-right-url }}">
+        <img src="{{ 'custom-banner-right.png' | asset_url }}" alt="" class="img-responsive custom-block-img hidden-xs" />
+        <img src="{{ 'custom-banner-right-mobile.png' | asset_url }}" alt="" class="img-responsive custom-block-img visible-xs" />
+      </a>
+      {% endif %}
+    </div>
+  </div> 
+</div>

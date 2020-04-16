@@ -1,0 +1,7 @@
+{% comment %} Added by SolverCircle for Custom Product Design Studio App {% endcomment %}
+
+{% if shop.metafields.CustomProductDesign.cp_is_store_enabled and product.metafields.CustomProductDesign.cp_is_enabled and shop.metafields.CustomProductDesign.cp_design_it_btn %}
+	<div id="dv-customized-product" style="display:none;" data-url="{{ product.variants.first.id }}" ></div>
+	<script type="text/javascript" src="/apps/customize-product/scripts/cp_product.min.js"></script>
+	<div id="sc-cp-app-info-150812" data-cp-design-it-btn="{{ shop.metafields.CustomProductDesign.cp_design_it_btn }}" ></div>
+{% endif %}

@@ -1,6 +1,28 @@
-{% comment %}
-  The contents of the product.liquid template can be found in /sections/product-template.liquid
-{% endcomment %}
+{% include 'theme-variables' %}
 
-{% section 'product-template' %}
-{% section 'product-recommendations' %}
+{% include 'product-page' %}
+
+{% include 'product-vendor-description' %}
+
+{% include 'product-footer' %}
+<!-- AddShoppers Product Schema Start -->
+<div itemscope itemtype="http://schema.org/Product" style="display: none">
+<span itemprop="name">{{ product.title }}</span>
+<span itemprop="description">{{ product.content }}</span>
+<img itemprop="image" src="{{ product.featured_image | product_img_url: 'compact' }}"/>
+<div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+<span itemprop="price">{{ product.price | money }}</span>
+{% if product.available %}
+<link itemprop="availability" href="http://schema.org/InStock">In Stock</link>
+{% else %}
+<link itemprop="availability" href="http://schema.org/OutOfStock">Out of Stock</link>
+{% endif %}
+</div>
+</div>
+<!-- AddShoppers Product Schema End -->
+
+<div class="bold-brain-widget" data-widget-id="bold-brain-widget-nWCHtbpeKeQTfbGS" ></div>
+
+
+
+<div class="bold-brain-widget" data-widget-id="bold-brain-widget-QsllRJipweDGnoYD" ></div>

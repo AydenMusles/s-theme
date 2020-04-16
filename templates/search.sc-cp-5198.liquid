@@ -1,0 +1,65 @@
+
+{% comment %} Added by SolverCircle for Custon T-shrit App {% endcomment %}
+
+{% layout none %}
+{% paginate search.results by 10 %}
+{% assign resultTotal = search.results_count %}
+
+{% capture output %}
+{
+    "TotalProduct" : "{{resultTotal}}",
+	{% if customer %} 
+	"CustomerID" : "{{customer.id}}",
+	{% endif %}
+    "Items":
+        [
+		  	{% assign is_first_prod = true %}
+			
+           	{% for product in search.results %}
+						{% if product.metafields.CustomProductDesign.IsHidden != 1 %}
+						{% if product.metafields.inventory.ShappifyHidden == "true" %}{% else %}                  
+						{% assign thumbURL = product.images[0] | product_img_url: 'thumb' %}
+                    {% if is_first_prod == false  %},{% endif %}				
+                    {
+                          "id":"{{product.id}}"
+                          ,"title":"{% include 'sc-cp-5198-json-cleaner' with product.title %}"
+					      ,"product_type":"{% include 'sc-cp-5198-json-cleaner' with product.product_type %}"
+                          ,"images" : [{"src" : "{% include 'sc-cp-5198-json-cleaner' with thumbURL %}"}]
+                          ,"options" : {{product.options | json}}
+                          ,"variants":
+                          [
+                            {% assign is_first_var = true %}
+                            {% for variant in product.variants %}
+                              {% include 'sc-cp-boldcsp-helper' with 'variants' %}
+								{% if variant.available %}
+                                  {% if is_first_var == false  %},{% endif %}				
+                                  {
+                                    "id":"{{variant.id}}"
+                                    ,"title":"{% include 'sc-cp-5198-json-cleaner' with variant.title %}"
+                                    ,"price":"{{variant.price}}"
+                                    ,"sku":"{% include 'sc-cp-5198-json-cleaner' with variant.sku %}"
+                                    ,"compare_at_price":"{{variant.compare_at_price}}"
+                                    ,"inventory_management":"{{variant.inventory_management}}"
+                                    ,"inventory_policy":"{{variant.inventory_policy}}"
+                                    ,"inventory_quantity":"{{variant.inventory_quantity}}"
+                                    ,"option1":"{% include 'sc-cp-5198-json-cleaner' with variant.option1 %}"
+                                    ,"option2":"{% include 'sc-cp-5198-json-cleaner' with variant.option2 %}"
+                                    ,"option3":"{% include 'sc-cp-5198-json-cleaner' with variant.option3 %}"
+
+                                  }	
+                                  {% assign is_first_var = false %}  			                              
+								{% endif %}
+                            {% endfor %}
+                          ]
+                          ,"wishlist" : "1"
+                    }
+                    {% assign is_first_prod = false %}
+				{% endif %}
+				{% endif %}
+            {% endfor %}			
+        ]
+	
+}
+{% endcapture %}
+{% endpaginate %}
+{{ output | strip_newlines }}

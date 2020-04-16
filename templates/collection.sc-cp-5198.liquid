@@ -1,0 +1,55 @@
+{% comment %} Added by SolverCircle for Cutsom T-shrit App {% endcomment %}
+
+{% layout none %}
+{% paginate collection.products by 10 %}
+{% assign resultTotal = collection.products_count %}
+
+{% capture output %}
+{
+    {% if customer %} 
+        "CustomerID" : "{{customer.id}}",
+    {% endif %}
+    "TotalProduct" : "{{resultTotal}}",
+    "CurrentPage": "{{paginate.current_page}}",
+    "Items":
+        [
+            {% for result in collection.products %}
+				{% if product.metafields.CustomProductDesign.IsHidden != 1 %}
+                {% assign resultURL = result.url %}
+                {% assign thumbURL = result.images[0] | product_img_url: 'thumb' %}				
+
+                {
+                    "id":"{{result.id}}"
+					,"title":"{% include 'sc-cp-5198-json-cleaner' with result.title %}"
+                    ,"price":"{{result.price}}"                    
+					,"product_type":"{% include 'sc-cp-5198-json-cleaner' with product.product_type %}"
+					,"images" : [{"src" : "{% include 'sc-cp-5198-json-cleaner' with thumbURL %}"}]
+					,"variants":
+					[
+						{% for vrnt in result.variants %}
+							{
+								"id":"{{vrnt.id}}"
+								,"title":"{% include 'sc-cp-5198-json-cleaner' with vrnt.title %}"
+								,"price":"{{vrnt.price}}"
+								,"compare_at_price":"{{vrnt.compare_at_price}}"
+								,"sku":"{% include 'sc-cp-5198-json-cleaner' with vrnt.sku %}"
+								,"inventory_management":"{{vrnt.inventory_management}}"
+								,"inventory_policy":"{{vrnt.inventory_policy}}"
+								,"inventory_quantity":"{{vrnt.inventory_quantity}}"
+								,"option1":"{% include 'sc-cp-5198-json-cleaner' with vrnt.option1 %}"
+								,"option2":"{% include 'sc-cp-5198-json-cleaner' with vrnt.option2 %}"
+								,"option3":"{% include 'sc-cp-5198-json-cleaner' with vrnt.option3 %}"
+							}
+						{% unless forloop.last %},{% endunless %}
+						{% endfor %}
+
+					]
+                }
+                {% unless forloop.last %},{% endunless %}
+				{% endif %}
+            {% endfor %}
+        ]
+}
+{% endcapture %}
+{% endpaginate %}
+{{ output | strip_newlines }}
